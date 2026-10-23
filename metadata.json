@@ -1,0 +1,6 @@
+{
+  "name": "ĐỊA LÍ 9 - Ôn Chuyên Địa Lí Cấp 2",
+  "description": "Nền tảng ôn thi học sinh giỏi và chuyên Địa lí cấp 2 (Lớp 6-9, trọng tâm Lớp 9): Lộ trình 5 chặng, Phòng thí nghiệm Atlat, Bậc thầy biểu đồ, Luyện đề chuyên, Thử thách 30 ngày và Lộ trình học tập cá nhân hóa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
