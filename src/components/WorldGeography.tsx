@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { 
   CONTINENTS_DATA, 
   GRADE_SYNTHESIS_DATA, 
+  GLOBAL_POPULATION_RECORDS,
+  VIETNAM_GLOBAL_RANKINGS,
   ContinentInfo, 
   GradeSynthesisTopic 
 } from "../data/worldGeographyData";
@@ -21,7 +23,11 @@ import {
   TrendingUp, 
   Scale, 
   Award,
-  Filter
+  Filter,
+  Wheat,
+  Coffee,
+  Fish,
+  Trees
 } from "lucide-react";
 
 interface WorldGeographyProps {
@@ -29,8 +35,8 @@ interface WorldGeographyProps {
 }
 
 export const WorldGeography: React.FC<WorldGeographyProps> = ({ onEarnXp }) => {
-  // Main view switcher: "continents" (6 châu lục) | "curriculum" (Tổng hợp Lớp 6-7-8)
-  const [activeSection, setActiveSection] = useState<"continents" | "curriculum">("continents");
+  // Main view switcher: "continents" | "curriculum" | "records" | "vietnam-rankings"
+  const [activeSection, setActiveSection] = useState<"continents" | "curriculum" | "records" | "vietnam-rankings">("continents");
 
   // Continents state
   const [selectedContinentId, setSelectedContinentId] = useState<string>("asia");
@@ -73,28 +79,50 @@ export const WorldGeography: React.FC<WorldGeographyProps> = ({ onEarnXp }) => {
             </div>
 
             {/* Main Switcher Buttons */}
-            <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-2xs">
               <button
                 onClick={() => setActiveSection("continents")}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                   activeSection === "continents"
                     ? "bg-[#1677B8] text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 <Globe2 className="w-4 h-4" />
-                <span>6 Châu Lục Thế Giới</span>
+                <span>6 Châu Lục</span>
               </button>
               <button
                 onClick={() => setActiveSection("curriculum")}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                   activeSection === "curriculum"
                     ? "bg-[#146B5B] text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Tổng hợp Lớp 6 - 7 - 8</span>
+              </button>
+              <button
+                onClick={() => setActiveSection("records")}
+                className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  activeSection === "records"
+                    ? "bg-rose-600 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span>Kỷ Lục Dân Số Thế Giới</span>
+              </button>
+              <button
+                onClick={() => setActiveSection("vietnam-rankings")}
+                className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  activeSection === "vietnam-rankings"
+                    ? "bg-amber-600 text-white shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <Award className="w-4 h-4" />
+                <span>Vị Thế Nông Sản & Kinh Tế VN</span>
               </button>
             </div>
           </div>
@@ -463,6 +491,230 @@ export const WorldGeography: React.FC<WorldGeographyProps> = ({ onEarnXp }) => {
                   })}
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VIEW 3: KỶ LỤC DÂN SỐ THẾ GIỚI (ĐÔNG NHẤT & ÍT NHẤT) */}
+        {/* ========================================================================= */}
+        {activeSection === "records" && (
+          <div className="space-y-8 animate-fadeIn">
+            {/* Intro banner */}
+            <div className="bg-gradient-to-r from-rose-900 via-rose-800 to-amber-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+              <div className="relative z-10 max-w-3xl">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider mb-3">
+                  <Users className="w-3.5 h-3.5" />
+                  Kỷ lục Địa lí Dân cư Toàn cầu
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-white">
+                  Bức Tranh Dân Số Thế Giới: Từ Cực Đại Đến Cực Tiểu
+                </h3>
+                <p className="text-sm sm:text-base text-rose-100 mt-2 leading-relaxed">
+                  Trái Đất hiện có hơn 8,1 tỉ người. Dân số phân bố vô cùng không đều, từ quốc gia đông dân nhất lịch sử với hơn 1,43 tỉ người (Ấn Độ) đến quốc gia có chủ quyền ít dân nhất thế giới chỉ vẻn vẹn khoảng 800 người (Thành Vatican).
+                </p>
+              </div>
+              <div className="absolute right-0 bottom-0 translate-x-10 translate-y-10 text-white/5 text-9xl font-black select-none pointer-events-none">
+                8.1B
+              </div>
+            </div>
+
+            {/* Comparison Grid: Most Populous vs Least Populous vs Vietnam */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {GLOBAL_POPULATION_RECORDS.map((rec) => {
+                const isIndia = rec.id === "most-populous";
+                const isVatican = rec.id === "least-populous";
+                const borderAccent = isIndia ? "border-amber-400 bg-amber-50/30" : isVatican ? "border-sky-400 bg-sky-50/30" : "border-emerald-400 bg-emerald-50/30";
+                const badgeColor = isIndia ? "bg-amber-600 text-white" : isVatican ? "bg-sky-700 text-white" : "bg-emerald-700 text-white";
+
+                return (
+                  <div
+                    key={rec.id}
+                    className={`rounded-2xl border-2 p-6 bg-white shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${borderAccent}`}
+                  >
+                    <div>
+                      {/* Badge & Flag */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${badgeColor}`}>
+                          {rec.rankNumber}
+                        </span>
+                        <span className="text-3xl">{rec.flagEmoji}</span>
+                      </div>
+
+                      <h4 className="text-xl font-black font-display text-slate-900 leading-tight">
+                        {rec.countryName}
+                      </h4>
+                      <p className="text-xs text-slate-500 font-semibold mt-1">
+                        Thủ đô: {rec.capital} • Vị trí: {rec.continent}
+                      </p>
+
+                      {/* Stat chips */}
+                      <div className="grid grid-cols-2 gap-2 mt-4">
+                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                          <div className="text-[11px] font-bold text-slate-500 uppercase">Quy mô dân số</div>
+                          <div className="text-sm font-black text-slate-900 mt-0.5">{rec.populationText}</div>
+                        </div>
+                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                          <div className="text-[11px] font-bold text-slate-500 uppercase">Diện tích lãnh thổ</div>
+                          <div className="text-sm font-black text-slate-900 mt-0.5">{rec.areaText}</div>
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 mt-2">
+                        <div className="text-[11px] font-bold text-slate-500 uppercase">Mật độ dân số</div>
+                        <div className="text-xs font-bold text-slate-800 mt-0.5">{rec.densityText}</div>
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal mt-4">
+                        {rec.description}
+                      </p>
+
+                      {/* Key facts bullets */}
+                      <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                        <div className="text-xs font-extrabold uppercase text-slate-800 tracking-wider">
+                          Đặc điểm địa lí nổi bật:
+                        </div>
+                        <ul className="space-y-1.5 text-xs text-slate-700">
+                          {rec.keyFacts.map((fact, fIdx) => (
+                            <li key={fIdx} className="flex items-start gap-2">
+                              <span className="text-amber-500 shrink-0 font-bold">•</span>
+                              <span className="leading-relaxed">{fact}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Key Comparison Takeaway Table */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm overflow-x-auto">
+              <h4 className="text-lg font-black text-slate-900 mb-3 flex items-center gap-2">
+                <Scale className="w-5 h-5 text-indigo-600" />
+                <span>Bảng So Sánh Đối Chiếu Nhanh (Dân số - Diện tích - Mật độ)</span>
+              </h4>
+              <table className="w-full text-left text-xs sm:text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-500 font-extrabold uppercase text-[11px] bg-slate-50">
+                    <th className="p-3">Chỉ tiêu địa lí</th>
+                    <th className="p-3 text-amber-700">Ấn Độ (Đông dân nhất)</th>
+                    <th className="p-3 text-sky-700">Vatican (Ít dân nhất)</th>
+                    <th className="p-3 text-emerald-700">Việt Nam (Hạng 15 TG)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+                  <tr>
+                    <td className="p-3 font-bold text-slate-600">Dân số hiện tại</td>
+                    <td className="p-3 font-black text-amber-900">~1,43 tỉ người (Số 1 thế giới)</td>
+                    <td className="p-3 font-black text-sky-900">~800 người (Ít nhất thế giới)</td>
+                    <td className="p-3 font-black text-emerald-900">100,3 triệu người (Top 15 TG)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold text-slate-600">Diện tích lãnh thổ</td>
+                    <td className="p-3">3,287 triệu km² (Hạng 7 thế giới)</td>
+                    <td className="p-3">0,44 km² (Nhỏ nhất thế giới)</td>
+                    <td className="p-3">331.344 km² (Hạng 65 thế giới)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold text-slate-600">Mật độ dân số</td>
+                    <td className="p-3">~435 người/km²</td>
+                    <td className="p-3">~1.800 người/km² (đô thị hóa 100%)</td>
+                    <td className="p-3">~303 người/km² (gấp 5 lần TB TG)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold text-slate-600">Cơ cấu dân số</td>
+                    <td className="p-3">Dân số trẻ (trung vị 28 tuổi)</td>
+                    <td className="p-3">Giáo sĩ, người trưởng thành</td>
+                    <td className="p-3">Cơ cấu vàng & già hóa nhanh</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* VIEW 4: VỊ THẾ NÔNG SẢN & KINH TẾ VIỆT NAM TRÊN THẾ GIỚI */}
+        {/* ========================================================================= */}
+        {activeSection === "vietnam-rankings" && (
+          <div className="space-y-8 animate-fadeIn">
+            {/* Banner */}
+            <div className="bg-gradient-to-r from-emerald-900 via-teal-800 to-amber-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+              <div className="relative z-10 max-w-3xl">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider mb-3">
+                  <Award className="w-3.5 h-3.5" />
+                  Tự hào Nông nghiệp & Kinh tế Việt Nam
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-white">
+                  Việt Nam Đứng Thứ Mấy Trên Bản Đồ Nông Sản Thế Giới?
+                </h3>
+                <p className="text-sm sm:text-base text-emerald-100 mt-2 leading-relaxed">
+                  Nhờ lợi thế thiên nhiên nhiệt đới gió mùa nóng ẩm, đất phù sa màu mỡ và đất đỏ badan trù phú, cùng bàn tay cần cù, sáng tạo của người nông dân và kỹ sư nông nghiệp, Việt Nam tự hào nắm giữ những vị thế hàng đầu thế giới về lúa gạo, cà phê Robusta, hạt điều, hồ tiêu, thủy sản và sầu riêng.
+                </p>
+              </div>
+              <div className="absolute right-0 bottom-0 translate-x-10 translate-y-10 text-white/5 text-9xl font-black select-none pointer-events-none">
+                TOP
+              </div>
+            </div>
+
+            {/* Rankings Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {VIETNAM_GLOBAL_RANKINGS.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Header with Icon and Rank Badge */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-3xl p-2 rounded-xl bg-slate-100">{item.icon}</span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${item.badgeColor}`}>
+                        {item.globalRank}
+                      </span>
+                    </div>
+
+                    <h4 className="text-xl font-black font-display text-slate-900">
+                      {item.commodity}
+                    </h4>
+                    <p className="text-xs text-slate-500 font-semibold">
+                      {item.englishCommodity}
+                    </p>
+
+                    {/* Annual Stats */}
+                    <div className="mt-3 p-3 bg-amber-50/70 rounded-xl border border-amber-200/70 text-xs font-bold text-amber-950">
+                      📊 {item.annualExportStats}
+                    </div>
+
+                    {/* Producing Regions */}
+                    <div className="mt-3 text-xs text-slate-700">
+                      <span className="font-extrabold text-slate-900">Vùng sản xuất trọng điểm: </span>
+                      <span className="font-medium">{item.keyProducingRegions}</span>
+                    </div>
+
+                    {/* Competitive Advantages */}
+                    <div className="mt-4 pt-3 border-t border-slate-100 space-y-1.5">
+                      <div className="text-[11px] font-extrabold uppercase text-slate-500 tracking-wider">
+                        Thế mạnh cạnh tranh vượt trội:
+                      </div>
+                      <ul className="space-y-1 text-xs text-slate-700">
+                        {item.competitiveAdvantages.map((adv, aIdx) => (
+                          <li key={aIdx} className="flex items-start gap-1.5">
+                            <span className="text-emerald-600 font-bold">✓</span>
+                            <span className="leading-relaxed">{adv}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Milestones / Highlight Footer */}
+                  <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 italic leading-relaxed">
+                    🌟 <strong>Dấu ấn:</strong> {item.milestonesAndHighlights}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

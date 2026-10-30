@@ -2,531 +2,622 @@ import React, { useState, useEffect } from "react";
 import { MOCK_EXAMS } from "../data/curriculumData";
 import { MockExam, ExamQuestion } from "../types";
 import { 
-  FileText, 
+  Gamepad2, 
+  Trophy, 
   Clock, 
   CheckCircle2, 
   AlertCircle, 
   RotateCcw, 
   Award, 
   ChevronRight, 
-  ChevronLeft,
-  ArrowRight,
-  TrendingUp,
-  AlertTriangle,
+  ArrowRight, 
+  Heart, 
+  Flame, 
+  Sparkles, 
+  ShieldAlert, 
+  Compass, 
+  Mountain, 
+  TreePine, 
+  Skull, 
+  Zap,
+  Play,
+  Check,
+  X,
   BookOpen
 } from "lucide-react";
 
 interface ExamRoomProps {
   onEarnXp?: (points: number) => void;
   onNavigateToTopic?: (topicId: string) => void;
+  isEmbedded?: boolean;
 }
 
-export const ExamRoom: React.FC<ExamRoomProps> = ({ onEarnXp, onNavigateToTopic }) => {
+type GameTheme = "lionForest" | "fansipan" | "ocean";
+
+export const ExamRoom: React.FC<ExamRoomProps> = ({ 
+  onEarnXp, 
+  onNavigateToTopic,
+  isEmbedded = false
+}) => {
+  // Selected Exam and Game Theme
   const [selectedExamId, setSelectedExamId] = useState<string>(MOCK_EXAMS[0].id);
   const currentExam: MockExam = MOCK_EXAMS.find((e) => e.id === selectedExamId) || MOCK_EXAMS[0];
+  const [selectedTheme, setSelectedTheme] = useState<GameTheme>("lionForest");
 
-  // Exam taking state
-  const [isExamActive, setIsExamActive] = useState<boolean>(false);
-  const [currentQuestionIdx, setCurrentQuestionIdx] = useState<number>(0);
+  // Game Play States
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentIdx, setCurrentIdx] = useState<number>(0);
+  const [lives, setLives] = useState<number>(3);
+  const [maxLives] = useState<number>(3);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isVictory, setIsVictory] = useState<boolean>(false);
   const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
-  const [timeLeft, setTimeLeft] = useState<number>(currentExam.timeLimitMinutes * 60);
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [lastAnswerStatus, setLastAnswerStatus] = useState<"none" | "correct" | "wrong">("none");
+  const [streak, setStreak] = useState<number>(0);
+  const [showExplanationModal, setShowExplanationModal] = useState<boolean>(false);
+  const [timeSpentSeconds, setTimeSpentSeconds] = useState<number>(0);
 
-  // Timer effect
+  // Timer
   useEffect(() => {
     let timer: any = null;
-    if (isExamActive && !isSubmitted && timeLeft > 0) {
+    if (isPlaying && !isGameOver && !isVictory) {
       timer = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            handleSubmitExam();
-            return 0;
-          }
-          return prev - 1;
-        });
+        setTimeSpentSeconds((prev) => prev + 1);
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isExamActive, isSubmitted, timeLeft]);
+  }, [isPlaying, isGameOver, isVictory]);
 
-  const handleStartExam = () => {
-    setIsExamActive(true);
-    setIsSubmitted(false);
+  const questions: ExamQuestion[] = currentExam.questions;
+  const currentQ: ExamQuestion = questions[currentIdx] || questions[0];
+  const totalQuestions = questions.length;
+
+  const handleStartGame = () => {
+    setIsPlaying(true);
+    setCurrentIdx(0);
+    setLives(3);
+    setIsGameOver(false);
+    setIsVictory(false);
     setUserAnswers({});
-    setCurrentQuestionIdx(0);
-    setTimeLeft(currentExam.timeLimitMinutes * 60);
+    setLastAnswerStatus("none");
+    setStreak(0);
+    setTimeSpentSeconds(0);
+    setShowExplanationModal(false);
   };
 
-  const handleSelectOption = (questionId: string, optionIndex: number) => {
-    if (isSubmitted) return;
-    setUserAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
-  };
+  const handleSelectOption = (optionIndex: number) => {
+    if (lastAnswerStatus !== "none" || isGameOver || isVictory) return;
 
-  const handleSubmitExam = () => {
-    setIsSubmitted(true);
-    setIsExamActive(false);
+    const isCorrect = optionIndex === currentQ.correctAnswer;
+    setUserAnswers((prev) => ({ ...prev, [currentQ.id]: optionIndex }));
 
-    // Calculate score
-    const totalQuestions = currentExam.questions.length;
-    let correctCount = 0;
-    currentExam.questions.forEach((q) => {
-      if (userAnswers[q.id] === q.correctAnswer) {
-        correctCount++;
+    if (isCorrect) {
+      setLastAnswerStatus("correct");
+      setStreak((prev) => prev + 1);
+      if (onEarnXp) {
+        onEarnXp(25 + (streak >= 3 ? 10 : 0));
       }
-    });
-
-    const xpEarned = correctCount * 25;
-    if (onEarnXp) {
-      onEarnXp(xpEarned);
+    } else {
+      setLastAnswerStatus("wrong");
+      setStreak(0);
+      const nextLives = lives - 1;
+      setLives(nextLives);
+      if (nextLives <= 0) {
+        setIsGameOver(true);
+      }
     }
   };
 
-  // Format time (HH:MM:SS)
-  const formatTime = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hrs > 0 ? `${hrs.toString().padStart(2, "0")}:` : ""}${mins
-      .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  const handleNextStation = () => {
+    setLastAnswerStatus("none");
+    setShowExplanationModal(false);
+    if (currentIdx + 1 >= totalQuestions) {
+      setIsVictory(true);
+      if (onEarnXp) {
+        onEarnXp(150); // Huge bonus for clearing the full exam game!
+      }
+    } else {
+      setCurrentIdx((prev) => prev + 1);
+    }
   };
 
-  // Performance calculation
-  const totalQuestions = currentExam.questions.length;
-  const answeredCount = Object.keys(userAnswers).length;
-  const progressPercent = Math.round((answeredCount / totalQuestions) * 100);
+  const handleRevive = () => {
+    setLives(3);
+    setIsGameOver(false);
+    setLastAnswerStatus("none");
+    setShowExplanationModal(false);
+  };
 
-  const correctCount = currentExam.questions.filter(
-    (q) => userAnswers[q.id] === q.correctAnswer
+  // Score calculation
+  const correctCount = Object.entries(userAnswers).filter(
+    ([qId, ansIdx]) => questions.find((q) => q.id === qId)?.correctAnswer === ansIdx
   ).length;
-  const finalScore = totalQuestions > 0 ? ((correctCount / totalQuestions) * 10).toFixed(1) : "0";
+  const scoreOutOf10 = totalQuestions > 0 ? ((correctCount / totalQuestions) * 10).toFixed(1) : "0.0";
 
-  const wrongQuestions = currentExam.questions.filter(
-    (q) => userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.correctAnswer
-  );
+  // Format time MM:SS
+  const formatTime = (secs: number) => {
+    const mins = Math.floor(secs / 60);
+    const remainder = secs % 60;
+    return `${mins.toString().padStart(2, "0")}:${remainder.toString().padStart(2, "0")}`;
+  };
 
-  return (
-    <section className="py-10 bg-[#F8FAF9]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-left mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 text-rose-800 text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-2">
-            <FileText className="w-4 h-4" />
-            <span>Hệ thống đề tham khảo trực tuyến</span>
+  const content = (
+    <div className="space-y-6 text-left">
+      {!isEmbedded && (
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 text-rose-700 text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-2 border border-rose-200">
+            <Gamepad2 className="w-4 h-4" />
+            <span>Đấu Trường Kiểm Tra Sinh Tồn • Chuyển Hóa 100% Đề Thi Thành Trò Chơi</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black font-display text-[#16332F] tracking-tight">
-            Đề Tham Khảo & Phòng Kiểm Tra Địa Lí 9
+          <h2 className="text-3xl sm:text-4xl font-black font-display text-slate-900 tracking-tight">
+            Đề Tham Khảo & Trò Chơi Ôn Tập Sinh Tồn
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 mt-2 max-w-3xl leading-relaxed font-normal">
-            Các bộ đề tham khảo chuẩn hóa bám sát cấu trúc thi chuyên và HSG: Số lượng câu hỏi tương ứng với số phút làm bài (45 câu/45 phút, 30 câu/30 phút, 15 câu/15 phút), có đồng hồ đếm ngược, thanh tiến độ và báo cáo phân tích lỗi sai chi tiết.
+          <p className="text-base sm:text-lg text-slate-700 mt-2 max-w-3xl leading-relaxed font-normal">
+            Toàn bộ các đề kiểm tra 15 phút, 1 tiết, đề thi học kì và đề thi Chuyên Địa lí lớp 10 được chuyển hóa thành hình thức trò chơi sinh tồn gay cấn: Trả lời đúng để vượt qua các trạm rừng bí hiểm, trả lời sai sẽ bị thú dữ tấn công!
           </p>
         </div>
+      )}
 
-        {/* Exam Selection Tabs (when not in exam) */}
-        {!isExamActive && !isSubmitted && (
+      {!isPlaying ? (
+          /* ========================================================================= */
+          /* LOBBY: CHỌN ĐỀ THI & HÌNH THỨC TRÒ CHƠI */
+          /* ========================================================================= */
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {MOCK_EXAMS.map((exam) => (
-                <div
-                  key={exam.id}
-                  onClick={() => setSelectedExamId(exam.id)}
-                  className={`p-6 rounded-2xl border-2 transition-all cursor-pointer text-left flex flex-col justify-between ${
-                    selectedExamId === exam.id
-                      ? "bg-white border-[#146B5B] shadow-md"
-                      : "bg-white border-slate-200 hover:border-slate-300"
+            {/* Banner Flagship: Vượt Rừng Sư Tử */}
+            <div className="bg-gradient-to-r from-amber-900 via-rose-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border-2 border-amber-500/40">
+              <div className="relative z-10 max-w-2xl">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider mb-3">
+                  🦁 Trò chơi kiểm tra sinh tồn tiêu điểm
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-black font-display text-white tracking-tight">
+                  Vượt Rừng Sư Tử Sinh Tồn (Lion Forest Survival)
+                </h3>
+                <p className="text-sm sm:text-base text-amber-100 mt-2 leading-relaxed">
+                  Bạn là nhà thám hiểm địa lí lạc vào khu rừng rậm châu Phi bí ẩn. Phía sau bạn là con sư tử săn mồi hung dữ đang rình rập! Mỗi câu hỏi địa lí là một trạm rừng sinh tử:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-xs font-bold">
+                  <div className="p-3 bg-emerald-950/60 rounded-xl border border-emerald-500/50 flex items-center gap-2 text-emerald-200">
+                    <span className="text-lg">🏃</span>
+                    <span>Trả lời ĐÚNG: Lao nhanh về phía trước, tiến thêm 1 trạm an toàn!</span>
+                  </div>
+                  <div className="p-3 bg-rose-950/60 rounded-xl border border-rose-500/50 flex items-center gap-2 text-rose-200">
+                    <span className="text-lg">🦁</span>
+                    <span>Trả lời SAI: Sư tử lao tới vồ ăn thịt, mất 1 mạng sinh lực!</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute right-4 bottom-2 text-8xl sm:text-9xl opacity-20 pointer-events-none select-none">
+                🦁
+              </div>
+            </div>
+
+            {/* Choose Game Mode Theme */}
+            <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm">
+              <h4 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-3 flex items-center gap-2">
+                <Compass className="w-4 h-4 text-[#146B5B]" />
+                <span>1. Chọn hình thức trò chơi kiểm tra:</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button
+                  onClick={() => setSelectedTheme("lionForest")}
+                  className={`p-4 rounded-xl border-2 text-left cursor-pointer transition-all flex flex-col justify-between ${
+                    selectedTheme === "lionForest"
+                      ? "border-amber-500 bg-amber-50/70 shadow-xs"
+                      : "border-slate-200 hover:border-slate-300 bg-white"
                   }`}
                 >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-[#E8F5EF] text-[#146B5B]">
-                        {exam.type}
-                      </span>
-                      <span className="text-xs text-slate-500 font-semibold flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {exam.timeLimitMinutes} phút
-                      </span>
-                    </div>
-
-                    <h3 className="font-extrabold text-lg text-[#16332F]">
-                      {exam.title}
-                    </h3>
-
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {exam.description}
-                    </p>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-2xl">🦁</span>
+                    {selectedTheme === "lionForest" && <span className="text-xs font-black text-amber-600">Đang chọn ✓</span>}
                   </div>
-
-                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-700">
-                      Số câu hỏi: {exam.questions.length} câu
-                    </span>
-                    <span className="font-extrabold text-[#146B5B]">
-                      Độ khó: {exam.difficulty}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Launch Exam CTA */}
-            <div className="p-8 rounded-2xl bg-gradient-to-br from-[#146B5B] to-[#1677B8] text-white text-center space-y-4 shadow-lg">
-              <h3 className="text-2xl font-black">
-                Sẵn sàng bước vào phòng thi: {currentExam.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-emerald-100 max-w-xl mx-auto">
-                Thời gian làm bài: {currentExam.timeLimitMinutes} phút. Hệ thống sẽ tự động tính điểm, phân tích bẫy trắc nghiệm và gợi ý chuyên đề cần khắc phục ngay sau khi nộp bài.
-              </p>
-              <button
-                id="btn-start-exam"
-                onClick={handleStartExam}
-                className="px-8 py-3.5 rounded-xl bg-white text-[#146B5B] font-black text-base shadow-md hover:bg-[#E8F5EF] active:scale-95 transition-all cursor-pointer"
-              >
-                🚀 Bắt đầu làm bài thi ngay
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ACTIVE EXAM INTERFACE */}
-        {isExamActive && !isSubmitted && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden text-left">
-            {/* Real Exam Header */}
-            <div className="p-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
-                  ĐỀ THI CHUYÊN ĐỊA LÍ 9
-                </span>
-                <h4 className="font-black text-sm sm:text-base text-white">
-                  {currentExam.title}
-                </h4>
-              </div>
-
-              {/* Countdown Timer */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 font-mono text-base font-bold text-amber-400">
-                  <Clock className="w-4 h-4 text-amber-400" />
-                  <span>⏱️ {formatTime(timeLeft)}</span>
-                </div>
+                  <div className="font-black text-sm text-slate-900">Vượt Rừng Sư Tử</div>
+                  <p className="text-xs text-slate-600 mt-1">Sai bị sư tử ăn thịt, đúng thoát hiểm qua các trạm rừng.</p>
+                </button>
 
                 <button
-                  onClick={handleSubmitExam}
-                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs active:scale-95 transition-all cursor-pointer"
+                  onClick={() => setSelectedTheme("fansipan")}
+                  className={`p-4 rounded-xl border-2 text-left cursor-pointer transition-all flex flex-col justify-between ${
+                    selectedTheme === "fansipan"
+                      ? "border-sky-500 bg-sky-50/70 shadow-xs"
+                      : "border-slate-200 hover:border-slate-300 bg-white"
+                  }`}
                 >
-                  Nộp bài thi
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-2xl">🏔️</span>
+                    {selectedTheme === "fansipan" && <span className="text-xs font-black text-sky-600">Đang chọn ✓</span>}
+                  </div>
+                  <div className="font-black text-sm text-slate-900">Chinh Phục Fansipan</div>
+                  <p className="text-xs text-slate-600 mt-1">Vượt 3.143m đỉnh nóc nhà Đông Dương, sai bị đá lở sương mù.</p>
+                </button>
+
+                <button
+                  onClick={() => setSelectedTheme("ocean")}
+                  className={`p-4 rounded-xl border-2 text-left cursor-pointer transition-all flex flex-col justify-between ${
+                    selectedTheme === "ocean"
+                      ? "border-teal-500 bg-teal-50/70 shadow-xs"
+                      : "border-slate-200 hover:border-slate-300 bg-white"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-2xl">🌊</span>
+                    {selectedTheme === "ocean" && <span className="text-xs font-black text-teal-600">Đang chọn ✓</span>}
+                  </div>
+                  <div className="font-black text-sm text-slate-900">Hải Trình Vượt Biển</div>
+                  <p className="text-xs text-slate-600 mt-1">Chèo thuyền vượt bão tố Biển Đông cập bến Đảo Ngọc Phú Quốc.</p>
                 </button>
               </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-slate-100 h-2">
-              <div
-                className="bg-[#146B5B] h-2 transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-
-            {/* Sub-header with question index & progress */}
-            <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs font-bold text-slate-700">
-              <span>
-                Câu hỏi {currentQuestionIdx + 1}/{totalQuestions}
-              </span>
-              <span>
-                Tiến độ: {answeredCount}/{totalQuestions} ({progressPercent}%)
-              </span>
-            </div>
-
-            {/* Main Exam Body */}
-            <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Question Content (8 cols) */}
-              <div className="lg:col-span-8 space-y-6">
-                {currentExam.questions[currentQuestionIdx] && (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-400 uppercase">
-                        Chuyên đề: {currentExam.questions[currentQuestionIdx].topicRef}
-                      </span>
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
-                        Độ khó: {currentExam.questions[currentQuestionIdx].level}
-                      </span>
-                    </div>
-
-                    <h3 className="font-extrabold text-base sm:text-lg text-[#16332F] leading-snug">
-                      Câu {currentQuestionIdx + 1}: {currentExam.questions[currentQuestionIdx].question}
-                    </h3>
-
-                    {/* Options */}
-                    <div className="space-y-2.5 pt-2">
-                      {currentExam.questions[currentQuestionIdx].options.map((opt, optIdx) => {
-                        const currentQId = currentExam.questions[currentQuestionIdx].id;
-                        const isChosen = userAnswers[currentQId] === optIdx;
-
-                        return (
-                          <button
-                            key={optIdx}
-                            onClick={() => handleSelectOption(currentQId, optIdx)}
-                            className={`w-full p-3.5 rounded-xl border-2 text-left text-xs sm:text-sm font-medium transition-all flex items-start gap-3 cursor-pointer ${
-                              isChosen
-                                ? "bg-[#E8F5EF] border-[#146B5B] text-[#146B5B] shadow-xs"
-                                : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-                            }`}
-                          >
-                            <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
-                              isChosen ? "bg-[#146B5B] text-white" : "bg-slate-100 text-slate-600"
-                            }`}>
-                              {String.fromCharCode(65 + optIdx)}
-                            </span>
-                            <span className="pt-0.5 leading-relaxed">{opt}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Navigation Next/Prev */}
-                <div className="flex items-center justify-between pt-6 border-t border-slate-100">
-                  <button
-                    disabled={currentQuestionIdx === 0}
-                    onClick={() => setCurrentQuestionIdx((prev) => prev - 1)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 cursor-pointer flex items-center gap-1.5"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    <span>Câu trước</span>
-                  </button>
-
-                  <button
-                    disabled={currentQuestionIdx === totalQuestions - 1}
-                    onClick={() => setCurrentQuestionIdx((prev) => prev + 1)}
-                    className="px-4 py-2 rounded-xl bg-[#146B5B] text-white text-xs font-bold hover:bg-[#0f5548] disabled:opacity-40 cursor-pointer flex items-center gap-1.5"
-                  >
-                    <span>Câu tiếp theo</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Fast Question Navigation Grid (4 cols) */}
-              <div className="lg:col-span-4 bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
-                <div className="font-bold text-xs text-slate-700">
-                  Danh sách câu hỏi ({answeredCount}/{totalQuestions})
-                </div>
-
-                <div className="grid grid-cols-5 gap-2">
-                  {currentExam.questions.map((q, qIndex) => {
-                    const isAnswered = userAnswers[q.id] !== undefined;
-                    const isCurrent = currentQuestionIdx === qIndex;
-
-                    let bg = "bg-white text-slate-700 border-slate-200";
-                    if (isCurrent) {
-                      bg = "bg-[#146B5B] text-white border-[#146B5B] font-black";
-                    } else if (isAnswered) {
-                      bg = "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold";
-                    }
-
-                    return (
-                      <button
-                        key={q.id}
-                        onClick={() => setCurrentQuestionIdx(qIndex)}
-                        className={`h-9 rounded-lg border text-xs flex items-center justify-center transition-all cursor-pointer ${bg}`}
-                      >
-                        {qIndex + 1}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="pt-3 border-t border-slate-200/80 space-y-1 text-[11px] text-slate-500">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-emerald-100 border border-emerald-300" />
-                    <span>Đã trả lời</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-white border border-slate-200" />
-                    <span>Chưa trả lời</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-[#146B5B]" />
-                    <span>Đang xem</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* COMPREHENSIVE POST-SUBMISSION REPORT */}
-        {isSubmitted && (
-          <div className="space-y-6 text-left">
-            {/* Scorecard Hero Banner */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+            {/* Choose Exam Package to Play */}
+            <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <span className="text-xs uppercase font-extrabold text-[#146B5B] tracking-wider block mb-1">
-                    Báo cáo kết quả chi tiết
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-black text-[#16332F]">
-                    {currentExam.title}
-                  </h3>
+                  <h4 className="text-sm font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                    <Award className="w-4 h-4 text-[#146B5B]" />
+                    <span>2. Chọn bộ đề tham khảo muốn chơi ({MOCK_EXAMS.length} gói đề kiểm tra):</span>
+                  </h4>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Thời gian hoàn thành: {Math.round((currentExam.timeLimitMinutes * 60 - timeLeft) / 60)} phút
+                    Mỗi gói đề tương ứng với số trạm rừng sinh tồn cần vượt qua
                   </p>
                 </div>
-
-                {/* Score badge */}
-                <div className="flex items-center gap-4 bg-[#E8F5EF] p-4 rounded-2xl border border-[#146B5B]/20">
-                  <div>
-                    <div className="text-xs font-bold text-[#146B5B]">Điểm số của bạn:</div>
-                    <div className="text-3xl sm:text-4xl font-black text-[#146B5B]">
-                      {finalScore} <span className="text-base font-normal text-slate-500">/ 10</span>
-                    </div>
-                  </div>
-                  <Award className="w-10 h-10 text-[#146B5B]" />
-                </div>
               </div>
 
-              {/* Fast Stats Row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 text-center">
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="text-xs text-slate-500 font-semibold">Số câu đúng</div>
-                  <div className="text-xl font-black text-emerald-600">{correctCount} / {totalQuestions}</div>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="text-xs text-slate-500 font-semibold">Số câu sai / bỏ qua</div>
-                  <div className="text-xl font-black text-rose-600">{totalQuestions - correctCount} câu</div>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="text-xs text-slate-500 font-semibold">Tỷ lệ chính xác</div>
-                  <div className="text-xl font-black text-[#1677B8]">
-                    {Math.round((correctCount / totalQuestions) * 100)}%
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="text-xs text-slate-500 font-semibold">Kinh nghiệm đạt được</div>
-                  <div className="text-xl font-black text-amber-600">+{correctCount * 25} XP</div>
-                </div>
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex items-center gap-3 pt-6">
-                <button
-                  onClick={handleStartExam}
-                  className="px-5 py-2.5 rounded-xl bg-[#146B5B] text-white font-bold text-xs hover:bg-[#0f5548] transition-all flex items-center gap-2 cursor-pointer"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>Làm lại bài thi này</span>
-                </button>
-                <button
-                  onClick={() => setIsSubmitted(false)}
-                  className="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-all cursor-pointer"
-                >
-                  Chọn đề thi khác
-                </button>
-              </div>
-            </div>
-
-            {/* Smart Recommendations: Topics to review */}
-            {wrongQuestions.length > 0 && (
-              <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-3">
-                <div className="font-extrabold text-sm text-amber-900 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-amber-600" />
-                  <span>🎯 Đề xuất lộ trình cá nhân hóa dựa trên kết quả làm bài:</span>
-                </div>
-                <p className="text-xs text-amber-950 leading-relaxed">
-                  Bạn đang bị hổng kiến thức ở các chủ đề sau:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {Array.from(new Set(wrongQuestions.map((q) => q.topicRef))).map((topicName, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 bg-white border border-amber-300 rounded-lg text-xs font-bold text-amber-900 flex items-center gap-1.5 shadow-2xs"
-                    >
-                      <BookOpen className="w-3.5 h-3.5 text-amber-600" />
-                      <span>{topicName}</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Detailed Question Review: Traps, Cause Analysis, Full Explanation */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
-              <h4 className="font-black text-base text-[#16332F] pb-3 border-b border-slate-100">
-                Phân tích chi tiết từng câu & Bóc tách bẫy trắc nghiệm:
-              </h4>
-
-              <div className="space-y-6">
-                {currentExam.questions.map((q, idx) => {
-                  const userAns = userAnswers[q.id];
-                  const isRight = userAns === q.correctAnswer;
-
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {MOCK_EXAMS.map((exam) => {
+                  const isSelected = selectedExamId === exam.id;
                   return (
                     <div
-                      key={q.id}
-                      className={`p-5 rounded-xl border space-y-3 ${
-                        isRight ? "bg-emerald-50/30 border-emerald-200" : "bg-rose-50/30 border-rose-200"
+                      key={exam.id}
+                      onClick={() => setSelectedExamId(exam.id)}
+                      className={`p-4 rounded-xl border-2 text-left cursor-pointer transition-all flex flex-col justify-between ${
+                        isSelected
+                          ? "border-[#146B5B] bg-[#E8F5EF]/60 shadow-xs scale-[1.01]"
+                          : "border-slate-200 hover:border-slate-300 bg-white"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-500">
-                          Câu {idx + 1} • {q.topicRef}
-                        </span>
-                        <span className={`text-xs font-black px-2.5 py-0.5 rounded-full ${
-                          isRight ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
-                        }`}>
-                          {isRight ? "✓ Đúng (+25 XP)" : "✗ Sai"}
-                        </span>
-                      </div>
-
-                      <div className="font-extrabold text-sm text-[#16332F]">
-                        {q.question}
-                      </div>
-
-                      {/* Options breakdown */}
-                      <div className="grid grid-cols-1 gap-1.5 text-xs">
-                        {q.options.map((opt, oIdx) => {
-                          const isOptRight = oIdx === q.correctAnswer;
-                          const isOptChosen = oIdx === userAns;
-
-                          let style = "bg-white border-slate-200 text-slate-600";
-                          if (isOptRight) {
-                            style = "bg-emerald-100 border-emerald-400 font-bold text-emerald-950";
-                          } else if (isOptChosen && !isOptRight) {
-                            style = "bg-rose-100 border-rose-400 text-rose-950 font-bold line-through";
-                          }
-
-                          return (
-                            <div key={oIdx} className={`p-2.5 rounded-lg border flex items-center gap-2 ${style}`}>
-                              <span className="font-bold">{String.fromCharCode(65 + oIdx)}.</span>
-                              <span>{opt}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Pedagogical Diagnosis & Trap alert */}
-                      <div className="pt-2 text-xs space-y-1.5 text-slate-700">
-                        <p>
-                          <strong>Giải thích chuẩn:</strong> {q.explanation}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                            {exam.type}
+                          </span>
+                          <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                            {exam.questions.length} trạm câu hỏi
+                          </span>
+                        </div>
+                        <h5 className="font-black text-sm text-slate-900 leading-snug">
+                          {exam.title}
+                        </h5>
+                        <p className="text-xs text-slate-600 mt-1.5 line-clamp-2">
+                          {exam.description}
                         </p>
-                        {q.trapWarning && (
-                          <p className="text-amber-800 font-medium bg-amber-50 p-2 rounded-md border border-amber-200 text-[11px]">
-                            ⚠️ <strong>Bẫy đề thi cần tránh:</strong> {q.trapWarning}
-                          </p>
-                        )}
-                        {!isRight && (
-                          <p className="text-rose-700 font-medium text-[11px]">
-                            💡 <strong>Nguyên nhân sai lầm:</strong> Học sinh thường nhầm lẫn giữa điều kiện cần (khí hậu, đất) và điều kiện quyết định quy mô sản xuất (công nghiệp chế biến, thị trường tiêu thụ).
-                          </p>
-                        )}
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <span className="text-slate-500 font-medium flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Thời lượng: {exam.timeLimitMinutes} phút</span>
+                        </span>
+                        <span className="font-bold text-[#146B5B] flex items-center gap-1">
+                          <span>{isSelected ? "Đã chọn" : "Chọn đề"}</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
                       </div>
                     </div>
                   );
                 })}
               </div>
+
+              {/* Start Button */}
+              <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200">
+                <div className="text-xs text-slate-600">
+                  Đã chọn: <strong className="text-slate-900">{currentExam.title}</strong> ({currentExam.questions.length} câu)
+                </div>
+                <button
+                  onClick={handleStartGame}
+                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-rose-600 to-rose-700 text-white font-black text-sm hover:brightness-110 active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Play className="w-4 h-4 fill-white" />
+                  <span>BẮT ĐẦU VƯỢT RỪNG SINH TỒN ({currentExam.questions.length} TRẠM)</span>
+                </button>
+              </div>
             </div>
           </div>
+        ) : (
+          /* ========================================================================= */
+          /* IN-GAME EXPERIENCE: VƯỢT RỪNG SƯ TỬ SINH TỒN */
+          /* ========================================================================= */
+          <div className="space-y-6">
+            {/* Game Status Bar */}
+            <div className="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-lg border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl">
+                  {selectedTheme === "lionForest" ? "🦁" : selectedTheme === "fansipan" ? "🏔️" : "🌊"}
+                </div>
+                <div>
+                  <div className="text-xs text-amber-400 font-black uppercase tracking-wider">
+                    {selectedTheme === "lionForest" ? "Rừng rậm nguy hiểm" : selectedTheme === "fansipan" ? "Đỉnh Fansipan 3.143m" : "Hải trình Biển Đông"}
+                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-white">
+                    Trạm {currentIdx + 1} / {totalQuestions}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Lives / Hearts */}
+              <div className="flex items-center gap-1.5 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700">
+                <span className="text-xs font-bold text-slate-300 mr-1.5 uppercase">Sinh lực:</span>
+                {Array.from({ length: maxLives }).map((_, i) => (
+                  <Heart
+                    key={i}
+                    className={`w-5 h-5 transition-transform ${
+                      i < lives
+                        ? "fill-rose-500 text-rose-500 scale-110"
+                        : "text-slate-600 fill-slate-700"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Progress & Timer */}
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1.5 text-slate-300 font-bold">
+                  <Clock className="w-4 h-4 text-amber-400" />
+                  <span>{formatTime(timeSpentSeconds)}</span>
+                </div>
+                <div className="flex items-center gap-1 text-emerald-400 font-black bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-800">
+                  <Flame className="w-4 h-4" />
+                  <span>Combo: {streak}</span>
+                </div>
+                <button
+                  onClick={() => setIsPlaying(false)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold cursor-pointer transition-colors"
+                >
+                  Thoát
+                </button>
+              </div>
+            </div>
+
+            {/* Visual Stage Banner: Jungle Trail & Lion Animation */}
+            <div className="relative h-44 sm:h-52 bg-gradient-to-b from-[#1b3b22] to-[#0f2415] rounded-3xl overflow-hidden border-2 border-emerald-800 shadow-inner p-4 sm:p-6 flex flex-col justify-between">
+              {/* Background forest silhouettes */}
+              <div className="absolute inset-0 opacity-20 pointer-events-none flex justify-around items-end text-6xl">
+                <span>🌲</span><span>🌳</span><span>🌴</span><span>🌲</span><span>🌳</span>
+              </div>
+
+              {/* Trail Progress indicator */}
+              <div className="relative z-10 w-full">
+                <div className="flex justify-between text-[11px] font-black uppercase text-amber-300 mb-1">
+                  <span>Trạm xuất phát</span>
+                  <span>Bìa rừng an toàn (Thoát hiểm)</span>
+                </div>
+                <div className="h-3 w-full bg-slate-950/80 rounded-full overflow-hidden p-0.5 border border-emerald-900/60">
+                  <div
+                    className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 rounded-full transition-all duration-500"
+                    style={{ width: `${((currentIdx + 1) / totalQuestions) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Character vs Lion Dynamic Stage */}
+              <div className="relative z-10 flex items-center justify-between px-4 sm:px-10">
+                {/* Lion */}
+                <div className={`flex flex-col items-center transition-all duration-500 ${
+                  lastAnswerStatus === "wrong" ? "scale-125 text-rose-400 translate-x-8" : "scale-100"
+                }`}>
+                  <span className="text-5xl sm:text-6xl animate-pulse">🦁</span>
+                  <span className="text-[10px] font-black text-rose-300 bg-rose-950/80 px-2 py-0.5 rounded mt-1 border border-rose-800">
+                    {lastAnswerStatus === "wrong" ? "GẦM! ĐANG VỒ TỚI!" : "Đang rình rập"}
+                  </span>
+                </div>
+
+                {/* Distance trail dots */}
+                <div className="flex-1 max-w-xs mx-4 flex items-center justify-around text-xs text-emerald-400/40">
+                  <span>🐾</span><span>•</span><span>•</span><span>🐾</span><span>•</span><span>🐾</span>
+                </div>
+
+                {/* Player Explorer */}
+                <div className={`flex flex-col items-center transition-all duration-500 ${
+                  lastAnswerStatus === "correct" ? "scale-125 text-emerald-300 -translate-y-2" : "scale-100"
+                }`}>
+                  <span className="text-5xl sm:text-6xl animate-bounce">🏃</span>
+                  <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded mt-1 border border-emerald-800">
+                    {lastAnswerStatus === "correct" ? "BỨT TỐC AN TOÀN!" : "Bạn (Nhà thám hiểm)"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* GAME OVER SCREEN */}
+            {isGameOver && (
+              <div className="bg-rose-950 border-2 border-rose-600 rounded-3xl p-6 sm:p-8 text-white text-center space-y-4 shadow-2xl animate-shake">
+                <div className="text-6xl animate-bounce">☠️</div>
+                <h3 className="text-2xl sm:text-3xl font-black text-rose-300 font-display">
+                  BẠN ĐÃ BỊ SƯ TỬ ĂN THỊT TẠI TRẠM {currentIdx + 1}!
+                </h3>
+                <p className="text-sm sm:text-base text-rose-100 max-w-xl mx-auto leading-relaxed">
+                  Rất tiếc! Do trả lời sai 3 lần, bạn đã bị sư tử đuổi kịp và bắt sống giữa khu rừng rậm. Nhưng đừng nản lòng, kiến thức địa lí sẽ giúp bạn thoát khỏi mọi cạm bẫy!
+                </p>
+                <div className="p-4 bg-black/40 rounded-2xl max-w-md mx-auto text-xs text-rose-200 text-left space-y-1">
+                  <div><strong>Câu hỏi vừa sai:</strong> {currentQ.question}</div>
+                  <div><strong>Đáp án đúng là:</strong> {currentQ.options[currentQ.correctAnswer]}</div>
+                  <div className="text-amber-300"><strong>Giải thích:</strong> {currentQ.explanation}</div>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <button
+                    onClick={handleRevive}
+                    className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm cursor-pointer shadow-md flex items-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>Hồi Sinh Thần Kỳ (Thử Lại Trạm Này)</span>
+                  </button>
+                  <button
+                    onClick={handleStartGame}
+                    className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm cursor-pointer"
+                  >
+                    Bắt Đầu Lại Từ Đầu
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* VICTORY SCREEN */}
+            {isVictory && (
+              <div className="bg-emerald-950 border-2 border-emerald-500 rounded-3xl p-6 sm:p-8 text-white text-center space-y-5 shadow-2xl animate-fadeIn">
+                <div className="text-6xl animate-bounce">🏆</div>
+                <h3 className="text-2xl sm:text-3xl font-black text-emerald-300 font-display">
+                  CHÚC MỪNG BẠN ĐÃ THOÁT KHỎI KHU RÙNG SƯ TỬ THÀNH CÔNG!
+                </h3>
+                <p className="text-sm sm:text-base text-emerald-100 max-w-xl mx-auto leading-relaxed">
+                  Xuất sắc vượt qua toàn bộ {totalQuestions} trạm rừng đầy hiểm trở của đề kiểm tra! Bạn đã chứng minh kiến thức địa lí tuyệt đỉnh và phản xạ sinh tồn kiên cường.
+                </p>
+
+                {/* Score Summary Badge */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
+                  <div className="p-3 bg-white/10 rounded-xl border border-emerald-500/40">
+                    <div className="text-[10px] uppercase font-bold text-emerald-300">Điểm số (Thang 10)</div>
+                    <div className="text-2xl font-black text-white">{scoreOutOf10} / 10</div>
+                  </div>
+                  <div className="p-3 bg-white/10 rounded-xl border border-emerald-500/40">
+                    <div className="text-[10px] uppercase font-bold text-emerald-300">Số câu đúng</div>
+                    <div className="text-2xl font-black text-white">{correctCount} / {totalQuestions}</div>
+                  </div>
+                  <div className="p-3 bg-white/10 rounded-xl border border-emerald-500/40">
+                    <div className="text-[10px] uppercase font-bold text-emerald-300">Sinh lực còn lại</div>
+                    <div className="text-2xl font-black text-rose-400">{"❤️".repeat(lives)}</div>
+                  </div>
+                  <div className="p-3 bg-white/10 rounded-xl border border-emerald-500/40">
+                    <div className="text-[10px] uppercase font-bold text-emerald-300">Thời gian</div>
+                    <div className="text-2xl font-black text-amber-300">{formatTime(timeSpentSeconds)}</div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
+                  <button
+                    onClick={handleStartGame}
+                    className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm cursor-pointer shadow-md flex items-center gap-2"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    <span>Chơi Lại Đề Này</span>
+                  </button>
+                  <button
+                    onClick={() => setIsPlaying(false)}
+                    className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm cursor-pointer"
+                  >
+                    Chọn Đề Khác Trong Đấu Trường
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ACTIVE QUESTION CARD (when game is neither over nor victory) */}
+            {!isGameOver && !isVictory && (
+              <div className="bg-white rounded-2xl border-2 border-slate-200 p-6 sm:p-7 shadow-sm space-y-5">
+                {/* Header of Question */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-md bg-[#146B5B] text-white text-xs font-black">
+                      Trạm rừng số {currentIdx + 1}
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">
+                      Mức độ: {currentQ.level} • {currentQ.topicName}
+                    </span>
+                  </div>
+                  {currentQ.atlatReference && (
+                    <span className="text-xs font-bold text-[#1677B8] bg-sky-50 px-2.5 py-1 rounded-md border border-sky-200">
+                      📖 {currentQ.atlatReference}
+                    </span>
+                  )}
+                </div>
+
+                {/* Question Prompt */}
+                <h4 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
+                  {currentQ.question}
+                </h4>
+
+                {/* 4 Options Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {currentQ.options.map((option, oIdx) => {
+                    const isSelected = userAnswers[currentQ.id] === oIdx;
+                    const isCorrect = oIdx === currentQ.correctAnswer;
+
+                    let btnStyle = "bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-300";
+                    if (lastAnswerStatus !== "none") {
+                      if (isCorrect) {
+                        btnStyle = "bg-emerald-100 border-emerald-500 text-emerald-950 font-black shadow-xs";
+                      } else if (isSelected) {
+                        btnStyle = "bg-rose-100 border-rose-500 text-rose-950 font-bold";
+                      } else {
+                        btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={oIdx}
+                        disabled={lastAnswerStatus !== "none"}
+                        onClick={() => handleSelectOption(oIdx)}
+                        className={`p-4 rounded-xl border-2 text-left cursor-pointer transition-all flex items-start gap-3 text-xs sm:text-sm font-medium ${btnStyle}`}
+                      >
+                        <span className="w-6 h-6 rounded-lg bg-white border border-slate-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                          {String.fromCharCode(65 + oIdx)}
+                        </span>
+                        <span className="leading-relaxed">{option}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* FEEDBACK & NEXT BUTTON */}
+                {lastAnswerStatus !== "none" && (
+                  <div className={`p-4 sm:p-5 rounded-xl border-2 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                    lastAnswerStatus === "correct"
+                      ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+                      : "bg-rose-50 border-rose-300 text-rose-950"
+                  }`}>
+                    <div className="space-y-1">
+                      <div className="font-black text-sm flex items-center gap-2">
+                        {lastAnswerStatus === "correct" ? (
+                          <>
+                            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                            <span>CHÍNH XÁC! Bạn thoát hiểm an toàn qua trạm này! (+25 XP)</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-5 h-5 text-rose-600" />
+                            <span>BỊ SƯ TỬ VỒ LẤY! Bạn mất 1 mạng sinh lực!</span>
+                          </>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-700 leading-relaxed font-normal">
+                        <strong>Giải thích:</strong> {currentQ.explanation}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={handleNextStation}
+                      className="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-black text-xs hover:bg-slate-800 active:scale-95 transition-all cursor-pointer shrink-0 shadow-xs flex items-center justify-center gap-1.5"
+                    >
+                      <span>{currentIdx + 1 >= totalQuestions ? "Hoàn thành vượt rừng" : "Trạm tiếp theo"}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         )}
+    </div>
+  );
+
+  if (isEmbedded) {
+    return content;
+  }
+
+  return (
+    <section className="py-10 bg-[#F4F7F6] text-left">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {content}
       </div>
     </section>
   );

@@ -4,7 +4,6 @@ import {
   BookMarked,
   Compass, 
   BarChart3, 
-  FileText, 
   Award, 
   Calendar, 
   Users, 
@@ -35,7 +34,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: "atlat", label: "Phòng Atlat", icon: Search },
     { id: "chart", label: "Bậc thầy biểu đồ", icon: BarChart3 },
     { id: "skills", label: "Kỹ năng chuyên", icon: Sparkles },
-    { id: "exam", label: "Đề tham khảo", icon: FileText },
     { id: "games", label: "Trò chơi ôn tập", icon: Gamepad2 },
     { id: "world", label: "Địa lí nước ngoài", icon: Globe },
     { id: "challenge", label: "Thử thách 30 ngày", icon: Calendar },
@@ -113,14 +111,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{xp.toLocaleString()} XP</span>
             </div>
 
-            {/* Exam Room Quick Trigger */}
+            {/* Games Hub Quick Trigger */}
             <button
-              id="header-exam-btn"
-              onClick={() => setActiveTab("exam")}
+              id="header-games-btn"
+              onClick={() => setActiveTab("games")}
               className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#146B5B] to-[#1677B8] text-white text-xs sm:text-sm font-bold shadow-sm hover:opacity-95 active:scale-95 transition-all cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-[#FFF3B0]" />
-              <span className="hidden sm:inline">Đề tham khảo</span>
+              <Gamepad2 className="w-4 h-4 text-[#FFF3B0]" />
+              <span className="hidden sm:inline">Trò chơi ôn tập</span>
             </button>
           </div>
         </div>

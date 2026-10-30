@@ -7,7 +7,6 @@ import { TextbookLessons } from "./components/TextbookLessons";
 import { AtlatLab } from "./components/AtlatLab";
 import { ChartMasterLab } from "./components/ChartMasterLab";
 import { SpecializedSkillCards } from "./components/SpecializedSkillCards";
-import { ExamRoom } from "./components/ExamRoom";
 import { GeographyReviewGames } from "./components/GeographyReviewGames";
 import { WorldGeography } from "./components/WorldGeography";
 import { ThirtyDayChallenge } from "./components/ThirtyDayChallenge";
@@ -93,7 +92,7 @@ export default function App() {
           <>
             <HeroSection
               onStartLearning={() => setActiveTab("curriculum")}
-              onTakeExam={() => setActiveTab("exam")}
+              onTakeExam={() => setActiveTab("games")}
               onOpenAtlat={() => setActiveTab("atlat")}
               onOpenChart={() => setActiveTab("chart")}
               onOpenThinking={() => setActiveTab("skills")}
@@ -105,7 +104,7 @@ export default function App() {
                 if (stageIdx === 2) setActiveTab("atlat");
                 else if (stageIdx === 3) setActiveTab("chart");
                 else if (stageIdx === 4) setActiveTab("skills");
-                else if (stageIdx === 5) setActiveTab("exam");
+                else if (stageIdx === 5) setActiveTab("games");
                 else setActiveTab("curriculum");
               }}
             />
@@ -136,15 +135,11 @@ export default function App() {
           <SpecializedSkillCards />
         )}
 
-        {activeTab === "exam" && (
-          <ExamRoom
-            onEarnXp={handleEarnXp}
+        {(activeTab === "games" || activeTab === "exam") && (
+          <GeographyReviewGames 
+            onEarnXp={handleEarnXp} 
             onNavigateToTopic={() => setActiveTab("curriculum")}
           />
-        )}
-
-        {activeTab === "games" && (
-          <GeographyReviewGames onEarnXp={handleEarnXp} />
         )}
 
         {activeTab === "world" && (

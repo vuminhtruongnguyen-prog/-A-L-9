@@ -534,3 +534,201 @@ export const GRADE_SYNTHESIS_DATA: GradeSynthesisTopic[] = [
     ]
   }
 ];
+
+// ==========================================
+// DỮ LIỆU KỶ LỤC DÂN SỐ THẾ GIỚI & VỊ THẾ NÔNG SẢN VIỆT NAM
+// ==========================================
+
+export interface PopulationRecord {
+  id: string;
+  category: "most_populous" | "least_populous" | "vietnam_rank";
+  countryName: string;
+  capital: string;
+  continent: string;
+  populationText: string;
+  areaText: string;
+  densityText: string;
+  flagEmoji: string;
+  description: string;
+  keyFacts: string[];
+  rankNumber: string;
+}
+
+export const GLOBAL_POPULATION_RECORDS: PopulationRecord[] = [
+  {
+    id: "most-populous",
+    category: "most_populous",
+    countryName: "Cộng hòa Ấn Độ (India)",
+    capital: "New Delhi",
+    continent: "Châu Á (Nam Á)",
+    populationText: "~1,43 tỉ người (Chính thức vượt qua Trung Quốc từ năm 2023)",
+    areaText: "3,287 triệu km² (Đứng thứ 7 thế giới)",
+    densityText: "~435 người/km² (Mật độ rất cao, tập trung đông đúc ở đồng bằng sông Hằng)",
+    flagEmoji: "🇮🇳",
+    rankNumber: "Số 1 Thế Giới",
+    description: "Ấn Độ hiện là quốc gia đông dân nhất hành tinh với hơn 1,43 tỉ người, sở hữu cơ cấu dân số vàng dồi dào với độ tuổi trung vị chỉ khoảng 28 tuổi, là nguồn động lực khổng lồ cho tăng trưởng kinh tế và công nghệ toàn cầu.",
+    keyFacts: [
+      "Vượt Trung Quốc từ tháng 4/2023 theo báo cáo chính thức của Liên Hợp Quốc (UNFPA).",
+      "Đồng bằng sông Hằng và sông Ấn là cái nôi nền văn minh cổ đại, đất đai phù sa trù phú nuôi sống hàng trăm triệu người.",
+      "Quy mô lực lượng lao động khổng lồ, là trung tâm gia công phần mềm, dược phẩm và công nghệ thông tin hàng đầu thế giới.",
+      "Thách thức: Áp lực cực lớn lên tài nguyên nước ngọt, hạ tầng giao thông đô thị và an sinh xã hội."
+    ]
+  },
+  {
+    id: "least-populous",
+    category: "least_populous",
+    countryName: "Thành Vatican (Vatican City State)",
+    capital: "Thành Vatican",
+    continent: "Châu Âu (Nam Âu - nằm trọn trong lòng thủ đô Rome, Italy)",
+    populationText: "~800 người (Quốc gia độc lập có dân số ít nhất hành tinh)",
+    areaText: "0,44 km² (Quốc gia có diện tích nhỏ nhất thế giới)",
+    densityText: "~1.800 người/km² (Toàn bộ dân cư sống trong khuôn viên thành phố)",
+    flagEmoji: "🇻🇦",
+    rankNumber: "Ít Dân Nhất Thế Giới",
+    description: "Thành Vatican là quốc gia có chủ quyền độc lập nhỏ nhất thế giới cả về diện tích và dân số. Công dân Vatican chủ yếu là các giáo sĩ, hồng y, giám mục, nữ tu và lực lượng Vệ binh Thụy Sĩ bảo vệ Tòa Thánh.",
+    keyFacts: [
+      "Quốc gia độc lập hoàn toàn được công nhận quốc tế theo Hiệp ước Latêranô ký kết năm 1929 với Italy.",
+      "Không có công dân sinh ra tự nhiên mang quốc tịch Vatican; quyền công dân được cấp dựa trên chức vụ công tác tại Tòa thánh.",
+      "Sở hữu quần thể kiến trúc vĩ đại bậc nhất nhân loại: Vương cung thánh đường Thánh Phêrô, Nhà nguyện Sistine với bích họa của Michelangelo.",
+      "Kinh tế độc đáo: Nguồn thu từ bán tem bưu chính, vé tham quan bảo tàng, ấn phẩm tôn giáo và tiền công đức toàn cầu."
+    ]
+  },
+  {
+    id: "vietnam-pop-rank",
+    category: "vietnam_rank",
+    countryName: "Cộng hòa Xã hội Chủ nghĩa Việt Nam",
+    capital: "Hà Nội",
+    continent: "Châu Á (Đông Nam Á)",
+    populationText: "100,3 triệu người (Chính thức vượt mốc 100 triệu dân)",
+    areaText: "331.344 km² (Đứng thứ 65 thế giới)",
+    densityText: "~303 người/km² (Gấp hơn 5 lần mật độ trung bình toàn cầu)",
+    flagEmoji: "🇻🇳",
+    rankNumber: "Top 15 Toàn Cầu / Top 3 Đông Nam Á",
+    description: "Việt Nam chính thức cán mốc quy mô 100 triệu dân, là một thị trường tiêu dùng nội địa rộng lớn và đang ở thời kỳ 'Cơ cấu dân số vàng' với gần 67% dân số trong độ tuổi lao động.",
+    keyFacts: [
+      "Đứng thứ 15 trên thế giới về quy mô dân số và đứng thứ 3 khu vực Đông Nam Á (sau Indonesia và Philippines).",
+      "Lực lượng lao động đạt trên 52,4 triệu người, tỷ lệ biết chữ trên 96%, thích ứng nhanh với công nghệ.",
+      "Phân bố dân cư chênh lệch: Đồng bằng sông Hồng và Đông Nam Bộ có mật độ rất cao, trong khi Tây Bắc và Tây Nguyên còn thưa thớt."
+    ]
+  }
+];
+
+export interface VietnamAgriculturalRanking {
+  commodity: string;
+  englishCommodity: string;
+  globalRank: string;
+  badgeColor: string;
+  icon: string;
+  annualExportStats: string;
+  keyProducingRegions: string;
+  competitiveAdvantages: string[];
+  milestonesAndHighlights: string;
+}
+
+export const VIETNAM_GLOBAL_RANKINGS: VietnamAgriculturalRanking[] = [
+  {
+    commodity: "Lúa gạo",
+    englishCommodity: "Rice Export",
+    globalRank: "Top 2 - Top 3 Thế Giới",
+    badgeColor: "bg-amber-500 text-white",
+    icon: "🌾",
+    annualExportStats: "Đạt 7,8 - 8,2 triệu tấn/năm, kim ngạch xuất khẩu kỷ lục đạt gần 4,7 tỉ USD",
+    keyProducingRegions: "Đồng bằng sông Cửu Long (vựa lúa chiếm hơn 90% sản lượng gạo xuất khẩu cả nước), Đồng bằng sông Hồng",
+    competitiveAdvantages: [
+      "Khí hậu nhiệt đới gió mùa nóng ẩm, mạng lưới sông ngòi kênh rạch dồi dào, thâm canh 3 vụ/năm.",
+      "Chuyển dịch mạnh mẽ từ lượng sang chất lượng cao: Các giống lúa thơm chất lượng cao chiếm trên 85% cơ cấu xuất khẩu.",
+      "Hệ thống đê bao, thủy lợi nội đồng hoàn chỉnh và kỹ thuật canh tác giảm phát thải khí nhà kính (Đề án 1 triệu ha lúa chất lượng cao ĐBSCL)."
+    ],
+    milestonesAndHighlights: "Giống gạo ST25 của kỹ sư Hồ Quang Cua (Sóc Trăng) 2 lần đoạt giải quán quân 'Gạo ngon nhất thế giới' (World's Best Rice vào năm 2019 và 2023), khẳng định thương hiệu lúa gạo Việt Nam trên trường quốc tế."
+  },
+  {
+    commodity: "Cà phê",
+    englishCommodity: "Coffee",
+    globalRank: "Số 2 Toàn Cầu (Số 1 Thế Giới về Cà phê Robusta)",
+    badgeColor: "bg-amber-900 text-white",
+    icon: "☕",
+    annualExportStats: "Xuất khẩu đạt 1,6 - 1,8 triệu tấn/năm, kim ngạch đạt trên 4,2 - 5,0 tỉ USD",
+    keyProducingRegions: "Tây Nguyên (Đắk Lắk - thủ phủ cà phê Buôn Ma Thuột, Lâm Đồng, Gia Lai, Đắk Nông), một số tỉnh Trung du Bắc Bộ (Sơn La)",
+    competitiveAdvantages: [
+      "Đất đỏ badan màu mỡ tầng dày, phân bố tập trung trên các cao nguyên lượn sóng rộng lớn thích hợp quy hoạch vùng chuyên canh quy mô lớn.",
+      "Khí hậu cận xích đạo có 2 mùa mưa - khô rõ rệt: Mùa khô thuận lợi cho phơi sấy, thu hoạch và phân hóa mầm hoa.",
+      "Việt Nam là nước sản xuất và xuất khẩu cà phê Robusta (cà phê vối) lớn nhất hành tinh, chi phối giá cà phê nguyên liệu toàn cầu."
+    ],
+    milestonesAndHighlights: "Buôn Ma Thuột được định hướng xây dựng thành 'Thành phố cà phê của thế giới', lễ hội cà phê quốc tế định kỳ thu hút chuyên gia từ hơn 60 quốc gia."
+  },
+  {
+    commodity: "Hạt điều",
+    englishCommodity: "Cashew Nuts",
+    globalRank: "Số 1 Thế Giới (Hơn 17 năm liên tiếp)",
+    badgeColor: "bg-emerald-700 text-white",
+    icon: "🥜",
+    annualExportStats: "Xuất khẩu đạt trên 640.000 tấn nhân điều, kim ngạch đạt 3,6 - 4,0 tỉ USD/năm",
+    keyProducingRegions: "Đông Nam Bộ (Bình Phước được mệnh danh là 'Thủ phủ điều của Việt Nam' chiếm trên 50% diện tích và sản lượng cả nước), Tây Nguyên (Đắk Lắk, Gia Lai)",
+    competitiveAdvantages: [
+      "Việt Nam nắm giữ công nghệ bóc tách vỏ lụa và chế biến sâu hạt điều tự động tiên tiến hàng đầu thế giới do chính kỹ sư Việt Nam chế tạo.",
+      "Chiếm tới 75% - 80% thị phần xuất khẩu nhân điều toàn cầu, là mắt xích không thể thay thế trong chuỗi cung ứng điều thế giới.",
+      "Nhập khẩu điều thô từ châu Phi và Campuchia về chế biến sâu, sau đó xuất khẩu sang Mỹ, EU, Trung Quốc, Nhật Bản."
+    ],
+    milestonesAndHighlights: "Hạt điều Bình Phước đã được bảo hộ chỉ dẫn địa lý quốc gia và quốc tế, được đánh giá có độ giòn ngọt, ngậy béo và hàm lượng dinh dưỡng hàng đầu thế giới."
+  },
+  {
+    commodity: "Hồ tiêu",
+    englishCommodity: "Black & White Pepper",
+    globalRank: "Số 1 Thế Giới",
+    badgeColor: "bg-slate-800 text-white",
+    icon: "🧂",
+    annualExportStats: "Xuất khẩu đạt 260.000 - 280.000 tấn/năm, kim ngạch đạt gần 1 tỉ USD",
+    keyProducingRegions: "Tây Nguyên (Gia Lai, Đắk Lắk, Đắk Nông) và Đông Nam Bộ (Bình Phước, Bà Rịa - Vũng Tàu, Đồng Nai), đảo ngọc Phú Quốc (Kiên Giang)",
+    competitiveAdvantages: [
+      "Chiếm khoảng 40% sản lượng hồ tiêu thế giới và trên 55% tổng thị phần xuất khẩu hồ tiêu toàn cầu.",
+      "Chất lượng hạt tiêu đen, tiêu sọ, tiêu chín đỏ có mùi thơm nồng nàn cay dịu đặc trưng nhờ thổ nhưỡng đất đỏ bazan và vi khí hậu đặc hữu.",
+      "Quy trình sản xuất sạch hữu cơ đạt chứng nhận quốc tế Rainforest Alliance, GlobalGAP đáp ứng các thị trường khó tính nhất."
+    ],
+    milestonesAndHighlights: "Chư Sê (Gia Lai) và Phú Quốc (Kiên Giang) là 2 vùng thương hiệu hồ tiêu nức tiếng trong và ngoài nước."
+  },
+  {
+    commodity: "Thủy hải sản (Tôm & Cá tra)",
+    englishCommodity: "Seafood (Pangasius & Shrimp)",
+    globalRank: "Top 3 Thế Giới (Số 1 Thế Giới về Cá tra/basa)",
+    badgeColor: "bg-cyan-700 text-white",
+    icon: "🐟",
+    annualExportStats: "Kim ngạch xuất khẩu toàn ngành đạt 9,2 - 11 tỉ USD/năm",
+    keyProducingRegions: "Đồng bằng sông Cửu Long (An Giang, Đồng Tháp, Cà Mau, Bạc Liêu, Sóc Trăng, Bến Tre), Duyên hải Nam Trung Bộ (nuôi tôm hùm)",
+    competitiveAdvantages: [
+      "Độc tôn số 1 thế giới về cá tra, cá basa nuôi ngọt trên dòng sông Tiền và sông Hậu, đáp ứng tiêu chuẩn khắt khe tại hơn 140 quốc gia.",
+      "Cà Mau, Bạc Liêu, Sóc Trăng là trung tâm nuôi tôm nước lợ (tôm sú, tôm thẻ chân trắng) công nghệ cao hàng đầu thế giới.",
+      "Vùng đặc quyền kinh tế biển rộng hơn 1 triệu km² với 4 ngư trường trọng điểm tạo nguồn hải sản dồi dào."
+    ],
+    milestonesAndHighlights: "Việt Nam là một trong 3 quốc gia xuất khẩu thủy sản lớn nhất thế giới cùng với Trung Quốc và Na Uy."
+  },
+  {
+    commodity: "Sầu riêng & Trái cây nhiệt đới",
+    englishCommodity: "Durian & Tropical Fruits",
+    globalRank: "Top 2 Thế Giới về Xuất khẩu Sầu riêng tươi",
+    badgeColor: "bg-yellow-600 text-white",
+    icon: "🍈",
+    annualExportStats: "Kim ngạch xuất khẩu sầu riêng bứt phá đạt trên 3,2 tỉ USD, tổng rau quả xuất khẩu đạt 6,8 tỉ USD/năm",
+    keyProducingRegions: "Tây Nguyên (Đắk Lắk, Lâm Đồng - có lợi thế mùa vụ sầu riêng muộn không đụng hàng), Đồng bằng sông Cửu Long (Tiền Giang, Bến Tre), Đông Nam Bộ (Đồng Nai)",
+    competitiveAdvantages: [
+      "Địa hình trải dài qua nhiều vĩ độ và độ cao giúp Việt Nam có sầu riêng rải vụ quanh năm, đặc biệt vụ nghịch và vụ Tây Nguyên tháng 8 - 10.",
+      "Khoảng cách địa lý gần gũi với thị trường tiêu thụ tỉ dân Trung Quốc (vận chuyển đường bộ chỉ 1,5 - 2 ngày giúp quả tươi ngon giữ trọn hương vị).",
+      "Các giống sầu riêng trứ danh: Ri6 (cơm vàng hạt lép, vị ngọt đậm thơm phức), Monthong, sầu riêng Musang King."
+    ],
+    milestonesAndHighlights: "Sầu riêng Việt Nam tạo nên cú hích lịch sử, trở thành 'trái cây tỉ đô' có tốc độ tăng trưởng kim ngạch nhanh nhất trong ngành nông nghiệp."
+  },
+  {
+    commodity: "Đồ gỗ & Sản phẩm gỗ",
+    englishCommodity: "Wood & Forest Products",
+    globalRank: "Top 5 Thế Giới & Số 1 Đông Nam Á",
+    badgeColor: "bg-emerald-900 text-white",
+    icon: "🪵",
+    annualExportStats: "Kim ngạch xuất khẩu đạt trên 14,5 - 16 tỉ USD/năm",
+    keyProducingRegions: "Đông Nam Bộ (Bình Dương, Đồng Nai, TP.HCM), Duyên hải Nam Trung Bộ (Bình Định) và các vùng rừng trồng nguyên liệu có chứng chỉ FSC",
+    competitiveAdvantages: [
+      "Tay nghề thợ mộc và kỹ thuật chế tác nội thất tinh xảo của Việt Nam được thị trường Mỹ, Nhật Bản, EU đánh giá hàng đầu.",
+      "Chuỗi cung ứng hoàn chỉnh từ nguồn gỗ keo, tràm rừng trồng trong nước và nhập khẩu gỗ hợp pháp.",
+      "Ứng dụng chuyển đổi số, thiết kế mẫu mã hiện đại theo tiêu chuẩn công trình xanh."
+    ],
+    milestonesAndHighlights: "Việt Nam vượt qua nhiều cường quốc để giữ vị trí số 1 ASEAN và số 2 châu Á về xuất khẩu đồ gỗ nội ngoại thất."
+  }
+];

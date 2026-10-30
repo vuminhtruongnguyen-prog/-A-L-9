@@ -175,7 +175,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 onClick={onTakeExam}
                 className="px-7 py-4 rounded-2xl bg-white border-2 border-[#1677B8] text-[#1677B8] font-extrabold text-base sm:text-lg hover:bg-[#1677B8]/5 active:scale-95 transition-all flex items-center gap-2.5 cursor-pointer shadow-xs"
               >
-                <span>📝 Đề tham khảo</span>
+                <span>🎮 Trò chơi ôn tập</span>
               </button>
             </div>
 

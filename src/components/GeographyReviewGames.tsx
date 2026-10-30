@@ -21,12 +21,15 @@ import {
   X,
   Play
 } from "lucide-react";
+import { ExamRoom } from "./ExamRoom";
 
 interface GeographyReviewGamesProps {
   onEarnXp?: (points: number) => void;
+  onNavigateToTopic?: (topicId: string) => void;
+  initialMode?: GameMode;
 }
 
-type GameMode = "millionaire" | "detective" | "memory" | "rank" | "islandLink";
+type GameMode = "lionSurvival" | "millionaire" | "detective" | "memory" | "rank" | "islandLink";
 type DifficultyLevel = "easy" | "medium" | "hard" | "master";
 
 // ==========================================
@@ -308,8 +311,12 @@ const RANK_CHALLENGES: RankChallenge[] = [
   }
 ];
 
-export const GeographyReviewGames: React.FC<GeographyReviewGamesProps> = ({ onEarnXp }) => {
-  const [activeGame, setActiveGame] = useState<GameMode>("millionaire");
+export const GeographyReviewGames: React.FC<GeographyReviewGamesProps> = ({ 
+  onEarnXp,
+  onNavigateToTopic,
+  initialMode = "lionSurvival"
+}) => {
+  const [activeGame, setActiveGame] = useState<GameMode>(initialMode);
   const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel>("medium");
 
   // State: Millionaire Game
@@ -528,23 +535,54 @@ export const GeographyReviewGames: React.FC<GeographyReviewGamesProps> = ({ onEa
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8F5EF] text-[#146B5B] text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-2">
             <Gamepad2 className="w-4 h-4 text-[#146B5B]" />
-            <span>Đấu trường ôn tập kiến thức Địa lí vui nhộn</span>
+            <span>Đấu trường Trò chơi Ôn tập & Đề tham khảo Sinh tồn</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black font-display text-[#16332F] tracking-tight">
-            Trò Chơi Ôn Tập & Thử Thách Địa Lí
+            Trò Chơi Ôn Tập & Đề Tham Khảo Sinh Tồn
           </h2>
           <p className="text-base sm:text-lg text-slate-600 mt-2 max-w-3xl leading-relaxed font-normal">
-            Học mà chơi, chơi mà học! Vừa thư giãn vừa khắc sâu kiến thức địa lí Việt Nam và thế giới qua 4 thể loại trò chơi trí tuệ, phân cấp độ từ cơ bản đến cao thủ và nhận ngay điểm thưởng kinh nghiệm XP.
+            Gom chung toàn bộ các đề thi tham khảo, bài kiểm tra 15p, 45p, thi học kì và chuyên Địa lí thành trò chơi sinh tồn gay cấn &quot;Vượt Rừng Sư Tử&quot;, cùng 4 thể loại trò chơi trí tuệ hào hứng: Ai là triệu phú, Thám tử bản đồ, Lật thẻ trí nhớ và Đấu trường xếp hạng!
           </p>
         </div>
 
         {/* Game Mode Selector Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
           {[
-            { id: "millionaire", label: "Ai Là Triệu Phú", icon: Trophy, desc: "12 câu leo thang & 3 trợ giúp" },
-            { id: "detective", label: "Thám Tử Địa Danh", icon: Search, desc: "Giải mã manh mối địa lý" },
-            { id: "memory", label: "Lật Thẻ Trí Nhớ", icon: Sparkles, desc: "Ghép đôi cặp khái niệm" },
-            { id: "rank", label: "Đấu Trường Xếp Hạng", icon: ArrowUpDown, desc: "Xếp thứ tự số liệu chuẩn" }
+            { 
+              id: "lionSurvival", 
+              label: "Vượt Rừng Sư Tử", 
+              icon: Gamepad2, 
+              badge: "Đề tham khảo",
+              desc: "Đề thi sinh tồn: sai bị sư tử ăn thịt, đúng vượt rừng" 
+            },
+            { 
+              id: "millionaire", 
+              label: "Ai Là Triệu Phú", 
+              icon: Trophy, 
+              badge: "12 câu leo thang",
+              desc: "12 câu leo thang & 3 trợ giúp nhận thưởng XP" 
+            },
+            { 
+              id: "detective", 
+              label: "Thám Tử Địa Danh", 
+              icon: Search, 
+              badge: "Manh mối bí mật",
+              desc: "Giải mã manh mối truy tìm địa danh bí ẩn" 
+            },
+            { 
+              id: "memory", 
+              label: "Lật Thẻ Trí Nhớ", 
+              icon: Sparkles, 
+              badge: "Rèn phản xạ",
+              desc: "Ghép đôi cặp khái niệm & hiện tượng địa lí" 
+            },
+            { 
+              id: "rank", 
+              label: "Đấu Trường Xếp Hạng", 
+              icon: ArrowUpDown, 
+              badge: "Kéo thả số liệu",
+              desc: "Xếp thứ tự quy mô, sản lượng và diện tích chuẩn" 
+            }
           ].map((mode) => {
             const Icon = mode.icon;
             const isActive = activeGame === mode.id;
@@ -562,20 +600,46 @@ export const GeographyReviewGames: React.FC<GeographyReviewGamesProps> = ({ onEa
                   <span className={`p-2 rounded-xl ${isActive ? "bg-[#146B5B] text-white" : "bg-slate-100 text-slate-700"}`}>
                     <Icon className="w-5 h-5" />
                   </span>
-                  {isActive && (
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      Đang chơi
-                    </span>
-                  )}
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+                  }`}>
+                    {isActive ? "Đang chơi" : mode.badge}
+                  </span>
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm sm:text-base text-[#16332F]">{mode.label}</h4>
-                  <p className="text-xs text-slate-500 mt-0.5 font-medium">{mode.desc}</p>
+                  <p className="text-xs text-slate-500 mt-0.5 font-medium line-clamp-2">{mode.desc}</p>
                 </div>
               </button>
             );
           })}
         </div>
+
+        {/* ========================================================================= */}
+        {/* GAME 0: VƯỢT RỪNG SƯ TỬ (ĐỀ THAM KHẢO SINH TỒN) */}
+        {/* ========================================================================= */}
+        {activeGame === "lionSurvival" && (
+          <div className="rounded-3xl bg-white border border-slate-200 p-5 sm:p-7 shadow-sm mb-8">
+            <div className="mb-6 pb-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-black uppercase tracking-wider">
+                  🦁 Chế độ chơi kiểm tra &amp; Đề thi tham khảo
+                </span>
+                <h3 className="text-2xl font-black font-display text-slate-900 mt-1">
+                  Đấu Trường Vượt Rừng Sư Tử Sinh Tồn
+                </h3>
+                <p className="text-sm text-slate-600 mt-0.5">
+                  Chọn đề kiểm tra (15 phút, 1 tiết, học kì, chuyên) và bắt đầu thử thách vượt rừng. Trả lời sai bị sư tử vồ mất mạng, đúng sẽ tiến trạm an toàn!
+                </p>
+              </div>
+            </div>
+            <ExamRoom 
+              onEarnXp={onEarnXp} 
+              onNavigateToTopic={onNavigateToTopic} 
+              isEmbedded={true} 
+            />
+          </div>
+        )}
 
         {/* ========================================================================= */}
         {/* GAME 1: AI LÀ TRIỆU PHÚ ĐỊA LÍ */}

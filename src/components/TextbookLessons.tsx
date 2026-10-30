@@ -345,16 +345,29 @@ export const TextbookLessons: React.FC<TextbookLessonsProps> = ({ onEarnXp }) =>
                     </div>
                   ))}
 
-                  {/* "Em có biết?" Box */}
+                  {/* Khung nhỏ: "Em có biết?" */}
                   {activeLesson.didYouKnow && (
-                    <div className="p-5 rounded-2xl bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-200 space-y-2">
-                      <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider text-[#1677B8]">
-                        <span>💡</span>
-                        <span>Em có biết? (Mở rộng kiến thức địa lí)</span>
+                    <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-400/15 to-orange-500/10 border-2 border-amber-300 shadow-sm space-y-2.5 relative overflow-hidden text-left">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="p-1.5 rounded-lg bg-amber-500 text-white shadow-2xs">
+                            <Lightbulb className="w-4 h-4 fill-white" />
+                          </span>
+                          <span className="font-black text-xs sm:text-sm uppercase tracking-wide text-amber-950">
+                            Em Có Biết? (Kiến Thức Mở Rộng Ngoài Sách Giáo Khoa)
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/90 text-amber-900 border border-amber-200">
+                          Khám phá mới lạ
+                        </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+                      <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium pl-1">
                         {activeLesson.didYouKnow}
                       </p>
+                      <div className="text-[11px] text-amber-900/80 italic pl-1 border-t border-amber-200/60 pt-2 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span>Thông tin mở rộng không có trong bài học chính nhưng liên quan trực tiếp đến bài học, giúp học sinh mở rộng tầm nhìn địa lí và đạt điểm cao.</span>
+                      </div>
                     </div>
                   )}
 
