@@ -481,7 +481,7 @@ export const MOCK_EXAMS: MockExam[] = [
         options: [
           "Hoàng Sa thuộc TP. Đà Nẵng; Trường Sa thuộc tỉnh Khánh Hòa",
           "Hoàng Sa thuộc tỉnh Quảng Ngãi; Trường Sa thuộc tỉnh Bình Thuận",
-          "Hoàng Sa thuộc tỉnh Thừa Thiên Huế; Trường Sa thuộc tỉnh Bà Rịa - Vũng Tàu",
+          "Hoàng Sa thuộc thành phố Huế; Trường Sa thuộc tỉnh Bà Rịa - Vũng Tàu",
           "Cả hai quần đảo đều thuộc TP. Đà Nẵng"
         ],
         correctAnswer: 0,
@@ -595,7 +595,7 @@ export const MOCK_EXAMS: MockExam[] = [
         question: "Ranh giới tự nhiên giữa vùng Bắc Trung Bộ và Duyên hải Nam Trung Bộ là:",
         options: ["Dãy Bạch Mã", "Đèo Ngang", "Đèo Hải Vân", "Dãy Tam Điệp"],
         correctAnswer: 2,
-        explanation: "Đèo Hải Vân cắt ngang dãy Bạch Mã đâm ra biển là ranh giới phân định tự nhiên giữa Bắc Trung Bộ (Thừa Thiên Huế) và Duyên hải Nam Trung Bộ (Đà Nẵng).",
+        explanation: "Đèo Hải Vân cắt ngang dãy Bạch Mã đâm ra biển là ranh giới phân định tự nhiên giữa Bắc Trung Bộ (Thành phố Huế) và Duyên hải Nam Trung Bộ (Đà Nẵng).",
         atlatReference: "Atlat trang 4-5",
         topicName: "Vùng Duyên hải Miền Trung"
       },

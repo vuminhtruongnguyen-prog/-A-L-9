@@ -133,7 +133,7 @@ let forumPosts: DiscussionPost[] = [
 
 // Health Check API
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", service: "DiaLi9-Backend" });
+  res.json({ status: "ok", service: "GLOW-Backend" });
 });
 
 // AI Assistant endpoint
@@ -178,7 +178,7 @@ app.post("/api/gemini/chat", async (req, res) => {
 5. Bài học rút ra & Mẹo đạt điểm tối đa.`;
     }
 
-    const systemInstruction = `Bạn là "Trợ lý Địa lí 9 AI" - chuyên gia cố vấn học tập và luyện thi học sinh giỏi môn Địa lí cấp 2 (trọng tâm lớp 9) chuyên sâu tại Việt Nam.
+    const systemInstruction = `Bạn là "Trợ lý GLOW AI" - cố vấn học tập thông minh của nền tảng GLOW, chuyên sâu bồi dưỡng học sinh giỏi và luyện thi chuyên môn Địa lí cấp 2 (trọng tâm lớp 9) tại Việt Nam.
 Khẩu hiệu: “Nắm chắc kiến thức – Hiểu sâu bản đồ – Tư duy địa lí – Chinh phục trường chuyên!”.
 Phong cách: Sư phạm mẫu mực, truyền cảm hứng, khuyến khích tư duy địa lí logic (Tự nhiên -> Dân cư -> Kinh tế -> Không gian vùng), hướng dẫn tra cứu Atlat Địa lí Việt Nam chính xác (trang 4-5 hành chính, 6-8 tự nhiên, 9 khí hậu, 10 sông ngòi, 11 đất, 12 sinh vật, 13-14 các miền tự nhiên, 15-16 dân cư, 17-25 kinh tế, 26-30 các vùng kinh tế).
 ${modeInstruction}
@@ -429,7 +429,7 @@ function generateOfflinePedagogicalAnswer(query: string, mode: string, context?:
     return `🗺️ **Phân tích sản lượng thủy sản theo Atlat Địa lí Việt Nam (Trang 20):**\n\n**1. Vùng dẫn đầu:** Đồng bằng sông Cửu Long (chiếm hơn 50% cả nước về cả đánh bắt và nuôi trồng), tiếp theo là Duyên hải Nam Trung Bộ (mạnh về đánh bắt hải sản xa bờ).\n\n**2. Nguyên nhân then chốt:**\n- **Tự nhiên:** Bờ biển dài, có 2 ngư trường trọng điểm lớn (Cà Mau - Kiên Giang, Ninh Thuận - Bình Thuận - Bà Rịa - Vũng Tàu). Vùng biển ấm quanh năm, nhiều bãi tôm, bãi cá. Diện tích mặt nước nuôi trồng trù phú: rừng ngập mặn, bãi triều, cửa sông, kênh rạch chằng chịt.\n- **Kinh tế - xã hội:** Người dân có truyền thống sông nước, tàu thuyền công suất lớn tăng nhanh, mạng lưới nhà máy chế biến đông lạnh xuất khẩu hiện đại (xuất khẩu tôm, cá tra, cá ba sa đứng đầu cả nước).`;
   }
 
-  return `📚 **Trợ lý Địa lí 9 phản hồi:**\n\nĐể trả lời câu hỏi **"${query}"** một cách hoàn hảo theo chuẩn thi học sinh giỏi:\n\n1. **Nguyên tắc "Tự nhiên trước, Nhân văn sau":** Luôn xét đầy đủ 4 yếu tố tự nhiên (Vị trí, Địa hình, Khí hậu, Nguồn nước/Đất) và 4 yếu tố nhân văn (Dân cư - lao động, Cơ sở hạ tầng/chế biến, Thị trường, Đường lối chính sách).\n2. **Khai thác Atlat đối chứng:** Hãy mở trang Atlat chuyên ngành hoặc các vùng kinh tế tương ứng để trích dẫn số liệu và địa danh cụ thể (tên cảng biển, hồ thủy điện, mỏ khoáng sản, khu kinh tế).\n3. **Cấu trúc bài làm:** Mở đoạn nêu khái quát vị thế -> Thân đoạn chia luận điểm rõ ràng -> Kết đoạn rút ra phương hướng phát triển bền vững.`;
+  return `📚 **Trợ lý GLOW phản hồi:**\n\nĐể trả lời câu hỏi **"${query}"** một cách hoàn hảo theo chuẩn thi học sinh giỏi:\n\n1. **Nguyên tắc "Tự nhiên trước, Nhân văn sau":** Luôn xét đầy đủ 4 yếu tố tự nhiên (Vị trí, Địa hình, Khí hậu, Nguồn nước/Đất) và 4 yếu tố nhân văn (Dân cư - lao động, Cơ sở hạ tầng/chế biến, Thị trường, Đường lối chính sách).\n2. **Khai thác Atlat đối chứng:** Hãy mở trang Atlat chuyên ngành hoặc các vùng kinh tế tương ứng để trích dẫn số liệu và địa danh cụ thể (tên cảng biển, hồ thủy điện, mỏ khoáng sản, khu kinh tế).\n3. **Cấu trúc bài làm:** Mở đoạn nêu khái quát vị thế -> Thân đoạn chia luận điểm rõ ràng -> Kết đoạn rút ra phương hướng phát triển bền vững.`;
 }
 
 // Vite middleware setup
@@ -450,7 +450,7 @@ async function startServer() {
     }
 
     const server = app.listen(PORT, "0.0.0.0", () => {
-      console.log(`ĐỊA LÍ 9 Server running on http://localhost:${PORT}`);
+      console.log(`GLOW Server running on http://localhost:${PORT}`);
     });
 
     server.on("error", (err: any) => {

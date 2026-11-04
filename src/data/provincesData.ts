@@ -167,7 +167,7 @@ export const PROVINCE_PINS: ProvincePin[] = [
     coords: { x: 57, y: 44 },
     image: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80",
     highlights: [
-      "Thành phố di sản văn hóa trực thuộc Trung ương của Việt Nam, nơi lưu giữ Quần thể di tích Cố đô Huế và Nhã nhạc cung đình Huế (UNESCO).",
+      "Thành phố di sản văn hóa trực thuộc Trung ương của Việt Nam (chuyển đổi từ tỉnh Thừa Thiên Huế thành Thành phố trực thuộc Trung ương), nơi lưu giữ Quần thể di tích Cố đô Huế và Nhã nhạc cung đình Huế (UNESCO).",
       "Sở hữu hệ đầm phá Tam Giang - Cầu Hai rộng lớn nhất Đông Nam Á với hệ sinh thái phong phú.",
       "Dãy núi Bạch Mã đâm ngang ra biển tạo nên đèo Hải Vân hùng vĩ - ranh giới tự nhiên phân chia khí hậu hai miền Bắc - Nam."
     ],

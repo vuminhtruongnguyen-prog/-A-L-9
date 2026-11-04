@@ -1071,7 +1071,7 @@ export const THIRTY_DAYS_STUDY_DATA: DayStudyPlan[] = [
         {
           id: "d21-q1",
           question: "Nơi bề ngang lãnh thổ đất liền hẹp nhất nước ta (chỉ khoảng 50 km) thuộc tỉnh nào?",
-          options: ["Quảng Bình", "Quảng Trị", "Hà Tĩnh", "Thừa Thiên Huế"],
+          options: ["Quảng Bình", "Quảng Trị", "Hà Tĩnh", "Thành phố Huế"],
           correctAnswer: 0,
           explanation: "Quảng Bình là nơi có bề ngang đất liền hẹp nhất cả nước (tính từ biên giới Lào đến bờ Biển Đông chưa đầy 50 km)."
         },

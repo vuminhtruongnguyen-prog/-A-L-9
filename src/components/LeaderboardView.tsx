@@ -65,7 +65,7 @@ export const LeaderboardView: React.FC = () => {
       rank: 5,
       name: "Đỗ Gia Huy",
       school: "THPT Chuyên Quốc Học Huế",
-      province: "Thừa Thiên Huế",
+      province: "Thành phố Huế",
       xp: 6420,
       streakDays: 27,
       badgesCount: 13,

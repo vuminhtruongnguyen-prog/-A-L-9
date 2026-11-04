@@ -179,10 +179,10 @@ export default function App() {
             {/* Brand & Slogan */}
             <div className="md:col-span-2 space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#146B5B] to-[#1677B8] flex items-center justify-center text-white font-black text-sm">
-                  9Đ
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#146B5B] to-[#1677B8] flex items-center justify-center text-white font-black text-xs tracking-wider">
+                  GLOW
                 </div>
-                <span className="font-extrabold text-lg text-white">ĐỊA LÍ 9</span>
+                <span className="font-extrabold text-lg text-white tracking-wide">GLOW</span>
               </div>
               <p className="text-xs text-amber-200 font-bold">
                 “Nắm chắc kiến thức – Hiểu sâu bản đồ – Tư duy địa lí – Chinh phục trường chuyên!”
@@ -278,7 +278,7 @@ export default function App() {
 
           <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
             <div>
-              © 2026 ĐỊA LÍ 9. Bám sát chương trình giáo dục hiện hành và định dạng đề thi chuyên.
+              © 2026 GLOW. Nền tảng Ôn Chuyên & Bồi dưỡng HSG Địa Lí Cấp 2.
             </div>
             <button
               onClick={scrollToTop}

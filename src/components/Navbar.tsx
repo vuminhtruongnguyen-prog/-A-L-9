@@ -51,14 +51,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => setActiveTab("hero")}
           >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#146B5B] to-[#1677B8] flex items-center justify-center text-white font-black text-2xl shadow-sm tracking-tighter font-display">
-              9Đ
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#146B5B] via-[#0E7A66] to-[#1677B8] flex items-center justify-center text-white font-black text-sm tracking-widest shadow-sm font-display">
+              GLOW
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <span className="font-display font-black text-2xl text-[#146B5B] tracking-tight">ĐỊA LÍ 9</span>
+                <span className="font-display font-black text-2xl text-[#146B5B] tracking-tight">GLOW</span>
                 <span className="text-[11px] uppercase font-extrabold tracking-widest px-2.5 py-0.5 rounded-full bg-[#E8F5EF] text-[#146B5B] border border-[#146B5B]/30">
-                  Chuyên Địa Cấp 2
+                  Địa Lí Chuyên & Nâng Cao
                 </span>
               </div>
               <p className="text-xs text-[#16332F]/75 font-semibold truncate hidden sm:block max-w-xs">

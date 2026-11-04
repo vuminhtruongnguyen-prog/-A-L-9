@@ -122,7 +122,7 @@ const MILLIONAIRE_QUESTIONS: MillionaireQuestion[] = [
       "Quảng Ngãi và Khánh Hòa",
       "Đà Nẵng và Khánh Hòa",
       "Bình Định và Ninh Thuận",
-      "Thừa Thiên Huế và Kiên Giang"
+      "Thành phố Huế và Kiên Giang"
     ],
     correctIndex: 1,
     hint: "Hoàng Sa trực thuộc thành phố đầu tàu miền Trung, Trường Sa trực thuộc tỉnh vịnh Nha Trang.",
@@ -213,7 +213,7 @@ const DETECTIVE_MYSTERIES: DetectiveMystery[] = [
     difficulty: "Trung bình",
     image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
     clues: [
-      "Tôi là ranh giới tự nhiên giữa tỉnh Thừa Thiên Huế và thành phố Đà Nẵng.",
+      "Tôi là ranh giới tự nhiên giữa thành phố Huế và thành phố Đà Nẵng.",
       "Vua Lê Thánh Tông từng ca ngợi tôi là 'Đệ nhất hùng quan' của trời Nam.",
       "Tôi là nhánh núi của dãy Bạch Mã đâm ngang ra biển, góp phần ngăn bớt gió mùa Đông Bắc lạnh buốt tiến sâu vào phía Nam."
     ],
@@ -306,7 +306,7 @@ const RANK_CHALLENGES: RankChallenge[] = [
       { id: "m-fansipan", name: "Đỉnh Fansipan", value: 3143, unit: "mét", displayHint: "Lào Cai (Nóc nhà ĐD)" },
       { id: "m-pusilung", name: "Đỉnh Pu Si Lung", value: 3083, unit: "mét", displayHint: "Lai Châu (Biên giới)" },
       { id: "m-tayconlinh", name: "Đỉnh Tây Côn Lĩnh", value: 2419, unit: "mét", displayHint: "Hà Giang (Đông Bắc)" },
-      { id: "m-bachma", name: "Đỉnh Bạch Mã", value: 1444, unit: "mét", displayHint: "Thừa Thiên Huế" }
+      { id: "m-bachma", name: "Đỉnh Bạch Mã", value: 1444, unit: "mét", displayHint: "Thành phố Huế" }
     ]
   }
 ];

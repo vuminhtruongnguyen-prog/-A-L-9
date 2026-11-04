@@ -136,12 +136,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="absolute top-1/2 left-0 -ml-20 w-80 h-80 rounded-full bg-[#1677B8]/10 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Slogan pill */}
-        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-[#146B5B]/30 shadow-xs mb-6 text-sm sm:text-base font-bold text-[#146B5B]">
-          <span className="flex h-2.5 w-2.5 rounded-full bg-[#146B5B] animate-pulse" />
-          <span className="tracking-wide font-display italic">
-            “Nắm chắc kiến thức – Hiểu sâu bản đồ – Tư duy địa lí – Chinh phục trường chuyên!”
-          </span>
+        {/* Slogan pill with GLOW badge */}
+        <div className="flex flex-wrap items-center gap-2.5 mb-6">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#146B5B] to-[#1677B8] text-white shadow-xs text-xs font-black tracking-widest uppercase font-display">
+            ✨ GLOW
+          </div>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#146B5B]/30 shadow-xs text-xs sm:text-sm font-bold text-[#146B5B]">
+            <span className="flex h-2 w-2 rounded-full bg-[#146B5B] animate-pulse" />
+            <span className="tracking-wide font-display italic">
+              “Nắm chắc kiến thức – Hiểu sâu bản đồ – Tư duy địa lí – Chinh phục trường chuyên!”
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
