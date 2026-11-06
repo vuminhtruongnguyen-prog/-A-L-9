@@ -138,13 +138,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Slogan pill with GLOW badge */}
         <div className="flex flex-wrap items-center gap-2.5 mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#146B5B] to-[#1677B8] text-white shadow-xs text-xs font-black tracking-widest uppercase font-display">
-            ✨ GLOW
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#146B5B] to-[#1677B8] text-white shadow-xs text-xs font-black tracking-wide font-display">
+            ✨ GLOW: Geography – Learning – Opportunity – Wisdom
           </div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#146B5B]/30 shadow-xs text-xs sm:text-sm font-bold text-[#146B5B]">
             <span className="flex h-2 w-2 rounded-full bg-[#146B5B] animate-pulse" />
             <span className="tracking-wide font-display italic">
-              “Nắm chắc kiến thức – Hiểu sâu bản đồ – Tư duy địa lí – Chinh phục trường chuyên!”
+              “Trong tay tấm bản đồ Việt Nam - Trong tim hoài bão khám phá toàn cầu”
             </span>
           </div>
         </div>

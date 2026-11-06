@@ -57,12 +57,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-2.5">
                 <span className="font-display font-black text-2xl text-[#146B5B] tracking-tight">GLOW</span>
-                <span className="text-[11px] uppercase font-extrabold tracking-widest px-2.5 py-0.5 rounded-full bg-[#E8F5EF] text-[#146B5B] border border-[#146B5B]/30">
-                  Địa Lí Chuyên & Nâng Cao
+                <span className="text-[11px] font-extrabold tracking-wide px-2.5 py-0.5 rounded-full bg-[#E8F5EF] text-[#146B5B] border border-[#146B5B]/30 hidden md:inline-flex">
+                  Geography – Learning – Opportunity – Wisdom
                 </span>
               </div>
-              <p className="text-xs text-[#16332F]/75 font-semibold truncate hidden sm:block max-w-xs">
-                Chinh phục trường Chuyên & HSG Quốc gia
+              <p className="text-xs text-[#16332F]/80 font-semibold truncate hidden sm:block max-w-sm lg:max-w-md" title="Trong tay tấm bản đồ Việt Nam - Trong tim hoài bão khám phá toàn cầu">
+                Trong tay tấm bản đồ Việt Nam - Trong tim hoài bão khám phá toàn cầu
               </p>
             </div>
           </div>

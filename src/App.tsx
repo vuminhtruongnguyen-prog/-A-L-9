@@ -178,14 +178,17 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand & Slogan */}
             <div className="md:col-span-2 space-y-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#146B5B] to-[#1677B8] flex items-center justify-center text-white font-black text-xs tracking-wider">
                   GLOW
                 </div>
                 <span className="font-extrabold text-lg text-white tracking-wide">GLOW</span>
+                <span className="text-xs text-[#E8F5EF]/80 font-medium tracking-wide">
+                  (Geography – Learning – Opportunity – Wisdom)
+                </span>
               </div>
               <p className="text-xs text-amber-200 font-bold">
-                “Nắm chắc kiến thức – Hiểu sâu bản đồ – Tư duy địa lí – Chinh phục trường chuyên!”
+                “Trong tay tấm bản đồ Việt Nam - Trong tim hoài bão khám phá toàn cầu”
               </p>
               <p className="text-xs text-slate-400 max-w-md leading-relaxed">
                 Nền tảng trực tuyến chuyên biệt dành cho học sinh THCS (từ lớp 6 đến lớp 9) bồi dưỡng học sinh giỏi môn Địa lí và luyện thi vào các trường THPT Chuyên toàn quốc.
