@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Award, Flame, Star, ShieldCheck, Trophy, Medal } from "lucide-react";
 
+import { StudentIdentity, getMascotById } from "../data/userProfileData";
+
 interface LeaderboardUser {
   rank: number;
   name: string;
@@ -13,8 +15,27 @@ interface LeaderboardUser {
   avatarLetter: string;
 }
 
-export const LeaderboardView: React.FC = () => {
+interface LeaderboardViewProps {
+  identity?: StudentIdentity;
+  xp?: number;
+  streakDays?: number;
+}
+
+export const LeaderboardView: React.FC<LeaderboardViewProps> = ({
+  identity,
+  xp = 2450,
+  streakDays = 12,
+}) => {
   const [activeFilter, setActiveFilter] = useState<"national" | "provincial" | "weekly">("national");
+  const mascot = identity ? getMascotById(identity.mascotId) : null;
+  const userDisplayName =
+    identity?.mode === "profile" && identity.name
+      ? `${identity.name}${identity.className ? ` · Lớp ${identity.className}` : ""}${
+          identity.school ? ` (${identity.school})` : ""
+        }`
+      : identity?.mode === "guest"
+      ? "Chế độ Khách · Khám phá ẩn danh"
+      : "Bạn (Chưa nhập tên & lớp)";
 
   const topStudents: LeaderboardUser[] = [
     {
@@ -116,27 +137,27 @@ export const LeaderboardView: React.FC = () => {
         {/* Current User Card */}
         <div className="bg-gradient-to-r from-[#146B5B] to-[#1677B8] p-5 rounded-2xl text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 shadow-md text-left">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-xl font-black text-white">
-              14
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-2xl font-black text-white">
+              {mascot ? mascot.emoji : "14"}
             </div>
             <div>
               <div className="text-xs text-emerald-100 font-bold uppercase tracking-wider">
-                Vị trí của bạn hiện tại
+                Vị trí của bạn hiện tại · Hạng #14 {mascot ? `· Linh thú: ${mascot.shortName}` : ""}
               </div>
               <h3 className="font-extrabold text-base sm:text-lg">
-                Học sinh 9A • Top 5% toàn quốc
+                {userDisplayName}
               </h3>
             </div>
           </div>
 
-          <div className="flex items-center gap-6 text-xs sm:text-sm font-bold">
+          <div className="flex items-center gap-6 text-xs sm:text-sm font-bold tabular-nums">
             <div className="flex items-center gap-1.5">
               <span>⭐</span>
-              <span>2.450 XP</span>
+              <span>{xp.toLocaleString()} XP</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span>🔥</span>
-              <span>12 ngày</span>
+              <span>{streakDays} ngày</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span>🎯</span>

@@ -9,18 +9,99 @@ import { ChartMasterLab } from "./components/ChartMasterLab";
 import { SpecializedSkillCards } from "./components/SpecializedSkillCards";
 import { GeographyReviewGames } from "./components/GeographyReviewGames";
 import { WorldGeography } from "./components/WorldGeography";
+import { ClimateChangeVietnam } from "./components/ClimateChangeVietnam";
 import { ThirtyDayChallenge } from "./components/ThirtyDayChallenge";
 import { MyProgressView } from "./components/MyProgressView";
 import { StickyNotesTips } from "./components/StickyNotesTips";
 import { StudyGroupsForum } from "./components/StudyGroupsForum";
 import { LeaderboardView } from "./components/LeaderboardView";
-import { Sparkles, BookOpen, Compass, Trophy, ArrowUp } from "lucide-react";
+import {
+  DEFAULT_IDENTITY,
+  PROFILE_STORAGE_KEY,
+  StudentIdentity,
+  getMascotById,
+} from "./data/userProfileData";
+import { Sparkles, ArrowUp } from "lucide-react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("hero");
   const [xp, setXp] = useState<number>(2450);
   const [streakDays, setStreakDays] = useState<number>(12);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [identity, setIdentity] = useState<StudentIdentity>(() => {
+    try {
+      const saved = localStorage.getItem(PROFILE_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...DEFAULT_IDENTITY, ...parsed };
+      }
+    } catch {
+      // Ignore storage errors
+    }
+    return DEFAULT_IDENTITY;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(identity));
+    } catch {
+      // Ignore storage errors
+    }
+  }, [identity]);
+
+  const showToast = (msg: string, duration = 2800) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, duration);
+  };
+
+  const handleSaveProfile = (
+    name: string,
+    className: string,
+    school: string,
+    mascotId: string
+  ) => {
+    const mascot = getMascotById(mascotId);
+    setIdentity({
+      mode: "profile",
+      name,
+      className,
+      school,
+      mascotId,
+    });
+    showToast(`${mascot.emoji} Đã lưu hồ sơ: ${name}${className ? ` · Lớp ${className}` : ""}`);
+  };
+
+  const handleUseGuestMode = (mascotId: string) => {
+    const mascot = getMascotById(mascotId);
+    setIdentity((prev) => ({
+      ...prev,
+      mode: "guest",
+      name: "",
+      className: "",
+      school: "",
+      mascotId,
+    }));
+    showToast(`${mascot.emoji} Đang sử dụng Chế độ Khách`);
+  };
+
+  const handleSelectMascot = (mascotId: string) => {
+    setIdentity((prev) => ({ ...prev, mascotId }));
+  };
+
+  const handleLogoutProfile = () => {
+    setIdentity((prev) => ({
+      ...DEFAULT_IDENTITY,
+      mascotId: prev.mascotId,
+    }));
+    try {
+      localStorage.removeItem(PROFILE_STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
+    showToast("Đã đăng xuất và xóa thông tin tên, lớp đã lưu");
+  };
 
   useEffect(() => {
     fetch("/api/user/progress")
@@ -84,6 +165,11 @@ export default function App() {
         setActiveTab={setActiveTab}
         xp={xp}
         streakDays={streakDays}
+        identity={identity}
+        onSaveProfile={handleSaveProfile}
+        onUseGuestMode={handleUseGuestMode}
+        onSelectMascot={handleSelectMascot}
+        onLogoutProfile={handleLogoutProfile}
       />
 
       {/* Main Content Router */}
@@ -146,6 +232,10 @@ export default function App() {
           <WorldGeography onEarnXp={handleEarnXp} />
         )}
 
+        {activeTab === "climate" && (
+          <ClimateChangeVietnam onEarnXp={handleEarnXp} />
+        )}
+
         {activeTab === "challenge" && (
           <ThirtyDayChallenge
             streakDays={streakDays}
@@ -164,11 +254,11 @@ export default function App() {
         )}
 
         {activeTab === "community" && (
-          <StudyGroupsForum onEarnXp={handleEarnXp} />
+          <StudyGroupsForum onEarnXp={handleEarnXp} identity={identity} />
         )}
 
         {activeTab === "leaderboard" && (
-          <LeaderboardView />
+          <LeaderboardView identity={identity} xp={xp} streakDays={streakDays} />
         )}
       </main>
 
@@ -239,6 +329,11 @@ export default function App() {
                 <li>
                   <button onClick={() => setActiveTab("world")} className="hover:text-white cursor-pointer">
                     Địa lí nước ngoài (Lớp 6-7-8)
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab("climate")} className="hover:text-white cursor-pointer">
+                    Biến đổi khí hậu ở Việt Nam
                   </button>
                 </li>
               </ul>

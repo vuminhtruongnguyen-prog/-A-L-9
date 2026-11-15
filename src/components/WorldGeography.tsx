@@ -328,27 +328,44 @@ export const WorldGeography: React.FC<WorldGeographyProps> = ({ onEarnXp }) => {
                 <table className="w-full text-xs sm:text-sm border-collapse">
                   <thead>
                     <tr className="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
-                      <th className="p-3 text-left">Châu Lục</th>
-                      <th className="p-3 text-left">Diện tích (km²)</th>
-                      <th className="p-3 text-left">Dân số</th>
-                      <th className="p-3 text-left">Đỉnh cao nhất</th>
-                      <th className="p-3 text-left">Sông dài nhất</th>
-                      <th className="p-3 text-left">Khí hậu nổi bật</th>
+                      <th className="p-3 text-left whitespace-nowrap">Châu Lục</th>
+                      <th className="p-3 text-left whitespace-nowrap">Diện tích</th>
+                      <th className="p-3 text-left whitespace-nowrap">Dân số</th>
+                      <th className="p-3 text-left whitespace-nowrap">Đỉnh cao nhất</th>
+                      <th className="p-3 text-left whitespace-nowrap">Sông dài nhất</th>
+                      <th className="p-3 text-left min-w-[260px]">Khí hậu nổi bật</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {CONTINENTS_DATA.map((c) => (
-                      <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="p-3 font-extrabold text-[#16332F]">
-                          {c.name} ({c.englishName})
-                        </td>
-                        <td className="p-3 font-semibold text-sky-700">{c.areaText.split(" ")[0]} km²</td>
-                        <td className="p-3 font-semibold text-slate-800">{c.populationText.split(" ")[0]}</td>
-                        <td className="p-3 text-slate-700">{c.highestPoint.name} ({c.highestPoint.altitudeMeters}m)</td>
-                        <td className="p-3 text-slate-700">{c.longestRiver.name} ({c.longestRiver.lengthKm}km)</td>
-                        <td className="p-3 text-slate-600 max-w-xs truncate">{c.climateSummary}</td>
-                      </tr>
-                    ))}
+                  <tbody className="divide-y divide-slate-100 align-top">
+                    {CONTINENTS_DATA.map((c) => {
+                      const areaShort = c.areaText.split(" (")[0];
+                      const popShort =
+                        c.id === "antarctica"
+                          ? "Không có cư dân thường xuyên (~1.000–4.500 nhà khoa học)"
+                          : c.populationText.split(" (")[0];
+                      return (
+                        <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="p-3 font-extrabold text-[#16332F] whitespace-nowrap">
+                            {c.name} ({c.englishName})
+                          </td>
+                          <td className="p-3 font-semibold text-sky-700 tabular-nums whitespace-nowrap">
+                            {areaShort}
+                          </td>
+                          <td className="p-3 font-semibold text-slate-800 tabular-nums min-w-[130px]">
+                            {popShort}
+                          </td>
+                          <td className="p-3 text-slate-700 tabular-nums min-w-[160px]">
+                            {c.highestPoint.name} ({c.highestPoint.altitudeMeters.toLocaleString()} m)
+                          </td>
+                          <td className="p-3 text-slate-700 tabular-nums min-w-[150px]">
+                            {c.longestRiver.name} ({c.longestRiver.lengthKm.toLocaleString()} km)
+                          </td>
+                          <td className="p-3 text-slate-700 whitespace-normal leading-relaxed min-w-[280px] max-w-md">
+                            {c.climateSummary}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

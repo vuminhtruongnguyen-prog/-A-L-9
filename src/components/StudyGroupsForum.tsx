@@ -13,11 +13,22 @@ import {
   Clock
 } from "lucide-react";
 
+import { StudentIdentity, getMascotById } from "../data/userProfileData";
+
 interface StudyGroupsForumProps {
   onEarnXp?: (points: number) => void;
+  identity?: StudentIdentity;
 }
 
-export const StudyGroupsForum: React.FC<StudyGroupsForumProps> = ({ onEarnXp }) => {
+export const StudyGroupsForum: React.FC<StudyGroupsForumProps> = ({ onEarnXp, identity }) => {
+  const mascot = identity ? getMascotById(identity.mascotId) : null;
+  const resolvedAuthorLabel =
+    identity?.mode === "profile" && identity.name
+      ? `${mascot ? mascot.emoji + " " : ""}${identity.name}${identity.className ? ` (${identity.className})` : ""}`
+      : identity?.mode === "guest"
+      ? `${mascot ? mascot.emoji + " " : ""}Khách khám phá`
+      : `${mascot ? mascot.emoji + " " : ""}Học sinh Chuyên Địa`;
+
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTag, setActiveTag] = useState<string>("Tất cả");
@@ -28,7 +39,11 @@ export const StudyGroupsForum: React.FC<StudyGroupsForumProps> = ({ onEarnXp }) 
   const [newTitle, setNewTitle] = useState<string>("");
   const [newContent, setNewContent] = useState<string>("");
   const [newTag, setNewTag] = useState<string>("Tự nhiên");
-  const [authorName, setAuthorName] = useState<string>("Học sinh 9A");
+  const [authorName, setAuthorName] = useState<string>(resolvedAuthorLabel);
+
+  useEffect(() => {
+    setAuthorName(resolvedAuthorLabel);
+  }, [resolvedAuthorLabel]);
 
   // Comment input per post
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
@@ -64,8 +79,9 @@ export const StudyGroupsForum: React.FC<StudyGroupsForumProps> = ({ onEarnXp }) 
         body: JSON.stringify({
           title: newTitle,
           content: newContent,
-          authorName: authorName || "Học sinh Chuyên Địa",
-          authorBadge: "Thành viên tích cực",
+          authorName: authorName || resolvedAuthorLabel,
+          school: identity?.mode === "profile" && identity.school ? identity.school : "Thành viên GLOW",
+          authorBadge: mascot ? `Linh thú ${mascot.shortName}` : "Thành viên tích cực",
           tag: newTag,
         }),
       });
@@ -99,8 +115,9 @@ export const StudyGroupsForum: React.FC<StudyGroupsForumProps> = ({ onEarnXp }) 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          author: "Bạn (Tôi)",
-          authorBadge: "HSG Chuyên",
+          author: resolvedAuthorLabel,
+          school: identity?.mode === "profile" && identity.school ? identity.school : "Thành viên GLOW",
+          authorBadge: mascot ? `Linh thú ${mascot.shortName}` : "HSG Chuyên",
           content: commentText,
         }),
       });
@@ -207,13 +224,18 @@ export const StudyGroupsForum: React.FC<StudyGroupsForumProps> = ({ onEarnXp }) 
                         {post.authorName.slice(0, 1)}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-extrabold text-xs text-[#16332F]">
-                            {post.authorName}
+                            {post.authorName || post.author}
                           </span>
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E8F5EF] text-[#146B5B] font-bold">
                             {post.authorBadge}
                           </span>
+                          {post.school && (
+                            <span className="text-[10px] text-slate-500 font-semibold">
+                              · {post.school}
+                            </span>
+                          )}
                         </div>
                         <span className="text-[10px] text-slate-400 flex items-center gap-1">
                           <Clock className="w-2.5 h-2.5" />
