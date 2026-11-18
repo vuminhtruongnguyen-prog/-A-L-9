@@ -403,9 +403,9 @@ export const ExamRoom: React.FC<ExamRoomProps> = ({
               <div className="relative z-10 flex items-center justify-between px-4 sm:px-10">
                 {/* Lion */}
                 <div className={`flex flex-col items-center transition-all duration-500 ${
-                  lastAnswerStatus === "wrong" ? "scale-125 text-rose-400 translate-x-8" : "scale-100"
+                  lastAnswerStatus === "wrong" ? "scale-115 text-rose-400 translate-x-6" : "scale-100"
                 }`}>
-                  <span className="text-5xl sm:text-6xl animate-pulse">🦁</span>
+                  <span className="text-5xl sm:text-6xl">🦁</span>
                   <span className="text-[10px] font-black text-rose-300 bg-rose-950/80 px-2 py-0.5 rounded mt-1 border border-rose-800">
                     {lastAnswerStatus === "wrong" ? "GẦM! ĐANG VỒ TỚI!" : "Đang rình rập"}
                   </span>
@@ -418,11 +418,11 @@ export const ExamRoom: React.FC<ExamRoomProps> = ({
 
                 {/* Player Explorer */}
                 <div className={`flex flex-col items-center transition-all duration-500 ${
-                  lastAnswerStatus === "correct" ? "scale-125 text-emerald-300 -translate-y-2" : "scale-100"
+                  lastAnswerStatus === "correct" ? "scale-115 text-emerald-300 -translate-y-1.5" : "scale-100"
                 }`}>
-                  <span className="text-5xl sm:text-6xl animate-bounce">🏃</span>
+                  <span className="text-5xl sm:text-6xl">🏃</span>
                   <span className="text-[10px] font-black text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded mt-1 border border-emerald-800">
-                    {lastAnswerStatus === "correct" ? "BỨT TỐC AN TOÀN!" : "Bạn (Nhà thám hiểm)"}
+                    {lastAnswerStatus === "correct" ? "VƯỢT TRẠM AN TOÀN!" : "Bạn (Nhà thám hiểm)"}
                   </span>
                 </div>
               </div>
@@ -463,8 +463,8 @@ export const ExamRoom: React.FC<ExamRoomProps> = ({
 
             {/* VICTORY SCREEN */}
             {isVictory && (
-              <div className="bg-emerald-950 border-2 border-emerald-500 rounded-3xl p-6 sm:p-8 text-white text-center space-y-5 shadow-2xl animate-fadeIn">
-                <div className="text-6xl animate-bounce">🏆</div>
+              <div className="bg-emerald-950 border-2 border-emerald-500 rounded-3xl p-6 sm:p-8 text-white text-center space-y-5 shadow-2xl animate-gentle-pop">
+                <div className="text-6xl">🏆</div>
                 <h3 className="text-2xl sm:text-3xl font-black text-emerald-300 font-display">
                   CHÚC MỪNG BẠN ĐÃ THOÁT KHỎI KHU RÙNG SƯ TỬ THÀNH CÔNG!
                 </h3>
@@ -570,7 +570,7 @@ export const ExamRoom: React.FC<ExamRoomProps> = ({
 
                 {/* FEEDBACK & NEXT BUTTON */}
                 {lastAnswerStatus !== "none" && (
-                  <div className={`p-4 sm:p-5 rounded-xl border-2 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                  <div className={`animate-gentle-pop p-4 sm:p-5 rounded-xl border-2 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     lastAnswerStatus === "correct"
                       ? "bg-emerald-50 border-emerald-300 text-emerald-950"
                       : "bg-rose-50 border-rose-300 text-rose-950"
@@ -579,13 +579,15 @@ export const ExamRoom: React.FC<ExamRoomProps> = ({
                       <div className="font-black text-sm flex items-center gap-2">
                         {lastAnswerStatus === "correct" ? (
                           <>
-                            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                            <span>CHÍNH XÁC! Bạn thoát hiểm an toàn qua trạm này! (+25 XP)</span>
+                            <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                              <Check className="w-3.5 h-3.5 stroke-[3]" />
+                            </span>
+                            <span>Chính xác! Chúc mừng bạn đã vượt qua trạm an toàn (+25 XP)</span>
                           </>
                         ) : (
                           <>
-                            <AlertCircle className="w-5 h-5 text-rose-600" />
-                            <span>BỊ SƯ TỬ VỒ LẤY! Bạn mất 1 mạng sinh lực!</span>
+                            <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                            <span>Chưa chính xác! Bạn mất 1 mạng sinh lực, hãy xem giải thích bên dưới.</span>
                           </>
                         )}
                       </div>

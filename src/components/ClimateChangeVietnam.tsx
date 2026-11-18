@@ -71,7 +71,7 @@ export const ClimateChangeVietnam: React.FC<ClimateChangeVietnamProps> = ({
               Biến Đổi Khí Hậu Ở Việt Nam
             </h2>
             <p className="text-base sm:text-lg text-slate-600 mt-2 leading-relaxed">
-              Tìm hiểu các vùng, tỉnh thành chịu tác động nặng nề nhất, phân tích nguyên nhân tự nhiên - con người và những hậu quả, tổn thất nghiêm trọng đối với đời sống nhân dân.
+              Tìm hiểu các vùng, tỉnh thành chịu tác động nặng nề nhất (đã cập nhật tên gọi 34 tỉnh, thành phố sau sáp nhập), phân tích nguyên nhân tự nhiên - con người và những hậu quả, tổn thất nghiêm trọng đối với đời sống nhân dân.
             </p>
           </div>
 
@@ -633,10 +633,29 @@ export const ClimateChangeVietnam: React.FC<ClimateChangeVietnamProps> = ({
                       })}
                     </div>
                     {isAnswered && (
-                      <div className="p-3.5 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#146B5B] shrink-0 mt-0.5" />
-                        <div>
-                          <strong>Giải thích:</strong> {q.explanation}
+                      <div
+                        className={`p-3.5 rounded-xl border text-xs sm:text-sm leading-relaxed flex items-start gap-2.5 animate-gentle-pop ${
+                          selected === q.correctIndex
+                            ? "bg-emerald-50 border-emerald-300 text-emerald-950"
+                            : "bg-white border-slate-200 text-slate-700"
+                        }`}
+                      >
+                        <CheckCircle2
+                          className={`w-4 h-4 shrink-0 mt-0.5 ${
+                            selected === q.correctIndex
+                              ? "text-emerald-600"
+                              : "text-[#146B5B]"
+                          }`}
+                        />
+                        <div className="space-y-0.5">
+                          {selected === q.correctIndex && (
+                            <div className="font-extrabold text-emerald-800">
+                              Chính xác! Chúc mừng bạn (+20 XP)
+                            </div>
+                          )}
+                          <div>
+                            <strong>Giải thích:</strong> {q.explanation}
+                          </div>
                         </div>
                       </div>
                     )}

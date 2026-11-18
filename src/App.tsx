@@ -10,8 +10,8 @@ import { SpecializedSkillCards } from "./components/SpecializedSkillCards";
 import { GeographyReviewGames } from "./components/GeographyReviewGames";
 import { WorldGeography } from "./components/WorldGeography";
 import { ClimateChangeVietnam } from "./components/ClimateChangeVietnam";
+import { VietnamLandmarks } from "./components/VietnamLandmarks";
 import { ThirtyDayChallenge } from "./components/ThirtyDayChallenge";
-import { MyProgressView } from "./components/MyProgressView";
 import { StickyNotesTips } from "./components/StickyNotesTips";
 import { StudyGroupsForum } from "./components/StudyGroupsForum";
 import { LeaderboardView } from "./components/LeaderboardView";
@@ -25,6 +25,7 @@ import { Sparkles, ArrowUp } from "lucide-react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("hero");
+  const [challengeView, setChallengeView] = useState<"days" | "progress">("days");
   const [xp, setXp] = useState<number>(2450);
   const [streakDays, setStreakDays] = useState<number>(12);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -149,11 +150,23 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleNavigateTab = (tab: string) => {
+    if (tab === "progress") {
+      setChallengeView("progress");
+      setActiveTab("challenge");
+    } else if (tab === "challenge") {
+      setChallengeView("days");
+      setActiveTab("challenge");
+    } else {
+      setActiveTab(tab);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-[#16332F] flex flex-col font-sans selection:bg-[#146B5B] selection:text-white antialiased">
       {/* Toast notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#146B5B] text-white text-xs font-bold shadow-lg flex items-center gap-2 animate-slide-in">
+        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-[#146B5B] text-white text-xs font-bold shadow-lg flex items-center gap-2 animate-gentle-pop">
           <Sparkles className="w-4 h-4 text-[#FFF3B0]" />
           <span>{toastMessage}</span>
         </div>
@@ -162,7 +175,7 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleNavigateTab}
         xp={xp}
         streakDays={streakDays}
         identity={identity}
@@ -236,20 +249,19 @@ export default function App() {
           <ClimateChangeVietnam onEarnXp={handleEarnXp} />
         )}
 
+        {activeTab === "landmarks" && (
+          <VietnamLandmarks onEarnXp={handleEarnXp} />
+        )}
+
         {activeTab === "challenge" && (
           <ThirtyDayChallenge
             streakDays={streakDays}
             xp={xp}
             onEarnXp={handleEarnXp}
             onDayComplete={handleDayComplete}
-          />
-        )}
-
-        {activeTab === "progress" && (
-          <MyProgressView
-            onStartPersonalizedPath={() => setActiveTab("curriculum")}
-            xp={xp}
-            streakDays={streakDays}
+            activeView={challengeView}
+            onViewChange={setChallengeView}
+            onStartPersonalizedPath={() => handleNavigateTab("curriculum")}
           />
         )}
 
@@ -332,8 +344,13 @@ export default function App() {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => setActiveTab("climate")} className="hover:text-white cursor-pointer">
+                  <button onClick={() => handleNavigateTab("climate")} className="hover:text-white cursor-pointer">
                     Biến đổi khí hậu ở Việt Nam
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleNavigateTab("landmarks")} className="hover:text-white cursor-pointer">
+                    Danh lam thắng cảnh ở Việt Nam
                   </button>
                 </li>
               </ul>
@@ -346,17 +363,12 @@ export default function App() {
               </h4>
               <ul className="space-y-2 text-xs text-slate-400">
                 <li>
-                  <button onClick={() => setActiveTab("challenge")} className="hover:text-white cursor-pointer">
-                    Thử thách 30 ngày tự học
+                  <button onClick={() => handleNavigateTab("challenge")} className="hover:text-white cursor-pointer">
+                    Thử thách 30 ngày &amp; Tiến độ của tôi
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => setActiveTab("progress")} className="hover:text-white cursor-pointer">
-                    Radar năng lực & Lộ trình 7 ngày
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setActiveTab("community")} className="hover:text-white cursor-pointer">
+                  <button onClick={() => handleNavigateTab("community")} className="hover:text-white cursor-pointer">
                     Nhóm thảo luận bài tập
                   </button>
                 </li>

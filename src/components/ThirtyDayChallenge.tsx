@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { THIRTY_DAYS_STUDY_DATA, DayStudyPlan } from "../data/thirtyDaysData";
+import { MyProgressView } from "./MyProgressView";
 import { 
   Flame, 
   Award, 
   Calendar, 
   CheckCircle2, 
-  Clock, 
   BookOpen, 
   Map, 
   BarChart3, 
@@ -14,11 +14,10 @@ import {
   ChevronRight,
   ChevronDown,
   Sparkles,
-  HelpCircle,
   Eye,
   EyeOff,
   RotateCcw,
-  AlertCircle
+  TrendingUp
 } from "lucide-react";
 
 interface ThirtyDayChallengeProps {
@@ -26,6 +25,9 @@ interface ThirtyDayChallengeProps {
   xp: number;
   onEarnXp?: (points: number) => void;
   onDayComplete?: () => void;
+  activeView?: "days" | "progress";
+  onViewChange?: (view: "days" | "progress") => void;
+  onStartPersonalizedPath?: () => void;
 }
 
 export const ThirtyDayChallenge: React.FC<ThirtyDayChallengeProps> = ({
@@ -33,7 +35,17 @@ export const ThirtyDayChallenge: React.FC<ThirtyDayChallengeProps> = ({
   xp,
   onEarnXp,
   onDayComplete,
+  activeView,
+  onViewChange,
+  onStartPersonalizedPath,
 }) => {
+  const [internalView, setInternalView] = useState<"days" | "progress">("days");
+  const currentView = activeView ?? internalView;
+  const setCurrentView = (view: "days" | "progress") => {
+    setInternalView(view);
+    if (onViewChange) onViewChange(view);
+  };
+
   const [selectedDay, setSelectedDay] = useState<number>(1);
   const [completedDays, setCompletedDays] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
   const [completedDailyTasks, setCompletedDailyTasks] = useState<Record<string, boolean>>({});
@@ -106,27 +118,27 @@ export const ThirtyDayChallenge: React.FC<ThirtyDayChallengeProps> = ({
     <section className="py-10 bg-[#F8FAF9] text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-900 text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-2 border border-amber-200">
               <Flame className="w-4 h-4 text-amber-600 fill-amber-500" />
-              <span>Chương trình rèn luyện 30 ngày kỷ luật</span>
+              <span>Chương trình rèn luyện 30 ngày &amp; Theo dõi tiến độ</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-black font-display text-[#16332F] tracking-tight">
-              Thử Thách 30 Ngày Chinh Phục Điểm 10 Địa Lí 9
+              Thử Thách 30 Ngày &amp; Tiến Độ Của Tôi
             </h2>
             <p className="text-base sm:text-lg text-slate-600 mt-2 max-w-2xl leading-relaxed font-normal">
-              Mỗi ngày đúng 5 nhiệm vụ: 1 bài học ngắn, 1 bài Atlat, 1 bài biểu đồ, 2 câu hỏi tư duy có lời giải chi tiết và 1 bài Mini Test câu hỏi ngắn về Địa lí Việt Nam.
+              Kết hợp trọn bộ 30 ngày thực chiến (5 nhiệm vụ &amp; Mini Test mỗi ngày) cùng biểu đồ Radar năng lực 6 chiều, chẩn đoán điểm yếu và lộ trình cá nhân hóa 7 ngày.
             </p>
           </div>
 
           {/* Streak & XP Counters */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
-              <Flame className="w-5 h-5 text-amber-500 fill-amber-500 animate-pulse" />
+              <Flame className="w-5 h-5 text-amber-500 fill-amber-500" />
               <div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase">Chuỗi ngày học</div>
-                <div className="text-sm font-black text-slate-800">{streakDays} ngày liên tục</div>
+                <div className="text-sm font-black text-slate-800 tabular-nums">{streakDays} ngày liên tục</div>
               </div>
             </div>
 
@@ -134,12 +146,49 @@ export const ThirtyDayChallenge: React.FC<ThirtyDayChallengeProps> = ({
               <Award className="w-5 h-5 text-[#146B5B]" />
               <div>
                 <div className="text-[11px] font-bold text-slate-400 uppercase">Kinh nghiệm</div>
-                <div className="text-sm font-black text-[#146B5B]">{xp} XP</div>
+                <div className="text-sm font-black text-[#146B5B] tabular-nums">{xp.toLocaleString()} XP</div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Unified Switcher: 30-Day Challenge vs My Progress & Radar */}
+        <div className="flex flex-wrap items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 w-max max-w-full mb-8">
+          <button
+            type="button"
+            onClick={() => setCurrentView("days")}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap shrink-0 ${
+              currentView === "days"
+                ? "bg-[#146B5B] text-white shadow-2xs"
+                : "text-slate-600 hover:bg-slate-50 hover:text-[#16332F]"
+            }`}
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Hành trình 30 ngày &amp; Mini Test</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentView("progress")}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap shrink-0 ${
+              currentView === "progress"
+                ? "bg-[#1677B8] text-white shadow-2xs"
+                : "text-slate-600 hover:bg-slate-50 hover:text-[#16332F]"
+            }`}
+          >
+            <TrendingUp className="w-4 h-4" />
+            <span>Tiến độ, Radar năng lực &amp; Lộ trình 7 ngày</span>
+          </button>
+        </div>
+
+        {currentView === "progress" ? (
+          <MyProgressView
+            embedded={true}
+            onStartPersonalizedPath={onStartPersonalizedPath}
+            xp={xp}
+            streakDays={streakDays}
+          />
+        ) : (
+        <>
         {/* 30-Day Grid Timeline */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -469,6 +518,8 @@ export const ThirtyDayChallenge: React.FC<ThirtyDayChallengeProps> = ({
             )}
           </div>
         </div>
+        </>
+        )}
       </div>
     </section>
   );

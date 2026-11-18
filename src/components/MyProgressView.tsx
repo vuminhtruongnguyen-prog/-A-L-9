@@ -54,12 +54,14 @@ interface MyProgressViewProps {
   onStartPersonalizedPath?: () => void;
   xp: number;
   streakDays: number;
+  embedded?: boolean;
 }
 
 export const MyProgressView: React.FC<MyProgressViewProps> = ({
   onStartPersonalizedPath,
   xp,
   streakDays,
+  embedded = false,
 }) => {
   const [reminderEnabled, setReminderEnabled] = useState<boolean>(true);
   const [reminderTime, setReminderTime] = useState<string>("20:00");
@@ -262,11 +264,10 @@ export const MyProgressView: React.FC<MyProgressViewProps> = ({
     });
   };
 
-  return (
-    <section className="py-10 bg-[#F8FAF9]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  const innerContent = (
+    <>
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 text-left">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4 text-left">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E8F5EF] text-[#146B5B] text-xs font-extrabold uppercase tracking-wider mb-2">
               <TrendingUp className="w-3.5 h-3.5" />
@@ -782,6 +783,17 @@ export const MyProgressView: React.FC<MyProgressViewProps> = ({
             </button>
           </div>
         </div>
+    </>
+  );
+
+  if (embedded) {
+    return <div className="space-y-2">{innerContent}</div>;
+  }
+
+  return (
+    <section className="py-10 bg-[#F8FAF9]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {innerContent}
       </div>
     </section>
   );
